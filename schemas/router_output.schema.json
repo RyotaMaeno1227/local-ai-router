@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local-ai.local/schemas/router_output.schema.json",
+  "title": "RouterOutput",
+  "description": "Fixed JSON output schema for the local scientific router/verifier.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_type",
+    "domain",
+    "risk",
+    "mode",
+    "needed_tools",
+    "needed_models",
+    "verification",
+    "fusion_policy",
+    "final_answer_policy"
+  ],
+  "properties": {
+    "task_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "local_answer",
+        "local_rag",
+        "code_exec",
+        "external_expert",
+        "managed_fusion",
+        "self_fusion_lite",
+        "web_or_rag_required",
+        "request_more_info"
+      ]
+    },
+    "needed_tools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "needed_models": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "checks",
+        "reason"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "fusion_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "type",
+        "reason",
+        "panel_size",
+        "judge_required"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "panel_size": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "judge_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "final_answer_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "include_uncertainty",
+        "include_sources"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "include_uncertainty": {
+          "type": "boolean"
+        },
+        "include_sources": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

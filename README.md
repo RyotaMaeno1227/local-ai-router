@@ -201,6 +201,32 @@ sudo apt update
 sudo apt install -y python3.12 python3.12-venv python3.12-dev
 ```
 
+## Router Schema Validation
+
+M3 fixes the router output contract in `schemas/router_output.schema.json`.
+Required top-level keys are `task_type`, `domain`, `risk`, `mode`, `needed_tools`, `needed_models`, `verification`, `fusion_policy`, and `final_answer_policy`.
+The validator uses only the Python standard library and does not load the model.
+
+Validate a single router JSON file:
+
+```bash
+python scripts/validate_router_json.py path/to/router_output.json
+```
+
+Validate a JSONL file with one router output per line:
+
+```bash
+python scripts/validate_router_json.py --mode jsonl path/to/router_outputs.jsonl
+```
+
+Validate SFT `messages` JSONL by checking each assistant `content` JSON string:
+
+```bash
+python scripts/validate_router_json.py --mode sft-jsonl path/to/router_sft.jsonl
+```
+
+Existing `data/router_sft_001.jsonl` and `evals/router_eval_001.jsonl` are preserved as initial M1/M2 samples and are not rewritten by M3.
+
 ## Environment Success Memo
 
 Current local environment status:
