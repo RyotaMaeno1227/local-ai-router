@@ -293,6 +293,31 @@ M5 base eval result:
 }
 ```
 
+## M6 SFT Dataset
+
+M6 expands `data/router_sft_001.jsonl` from 10 examples to 150 schema-valid SFT examples. The purpose is router/verifier behavior stabilization before any fine-tuning, not knowledge injection.
+
+The expansion is based on M5 base eval failures recorded in:
+
+- `eval_results/base_eval_001.json`
+- `eval_results/base_predictions_001.jsonl`
+- `docs/base_eval_failure_analysis.md`
+
+The dataset emphasizes:
+
+- mode classification examples for all fixed router modes
+- risk calibration, especially high and critical engineering cases
+- concrete `needed_tools` selection
+- domain-specific `verification.checks`
+- stricter control of `request_more_info`, limited to missing code, missing files/attachments, or missing comparison targets
+- explicit fusion decisions for `managed_fusion` and `self_fusion_lite`
+
+Fine-tuning has still not been run. Run schema validation before any future training:
+
+```bash
+python scripts/validate_router_json.py data/router_sft_001.jsonl --mode sft-jsonl
+```
+
 ## Environment Success Memo
 
 Current local environment status:
