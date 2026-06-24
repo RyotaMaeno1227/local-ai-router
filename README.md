@@ -379,6 +379,57 @@ The current operating decision is to treat `openai/gpt-oss-20b` as an inference-
 
 Detailed findings are in `docs/m7_lora_dryrun_findings.md`. Adapter directories under `adapters/` and operational logs under `logs/*.md` are not managed by git.
 
+## M7b Prompt Router V2
+
+M7b improves the inference-only base router without fine-tuning. It uses a stricter system prompt, five compact few-shot examples, and one schema repair attempt only when JSON parsing or schema validation fails.
+
+Prompt files:
+
+- `prompts/router_system_v2.md`
+- `prompts/router_fewshot_v2.jsonl`
+
+Run the full prompt-router v2 eval with:
+
+```bash
+conda run -n gptoss20b python scripts/eval_router.py \
+  --eval-file evals/router_eval_001.jsonl \
+  --schema schemas/router_output.schema.json \
+  --model-name openai/gpt-oss-20b \
+  --local-files-only \
+  --trust-remote-code \
+  --system-prompt-file prompts/router_system_v2.md \
+  --fewshot-file prompts/router_fewshot_v2.jsonl \
+  --prompt-version prompt-router-v2 \
+  --repair-json-once \
+  --max-new-tokens 256 \
+  --temperature 0 \
+  --results eval_results/prompt_router_v2_eval_001.json \
+  --predictions-out eval_results/prompt_router_v2_predictions_001.jsonl \
+  --markdown-log logs/prompt_router_v2_eval_001.md
+```
+
+Saved result files:
+
+- `eval_results/prompt_router_v2_smoke_001.json`
+- `eval_results/prompt_router_v2_eval_001.json`
+- `eval_results/prompt_router_v2_predictions_001.jsonl`
+- `docs/prompt_router_v2_eval_report.md`
+
+M7b result summary versus M5 base eval:
+
+```text
+schema_valid_count: 44 -> 50
+expected_mode_match_count: 16 -> 44
+must_tools_contained_count: 9 -> 42
+must_verification_contained_count: 0 -> 7
+risk_underestimated_count: 35 -> 16
+request_more_info_count: 24 -> 9
+repair_attempted_count: 0 -> 1
+repair_success_count: 0 -> 1
+```
+
+`openai/gpt-oss-20b` remains inference-only on RTX5080. No fine-tuning, LoRA dry-run, or adapter training was run for M7b.
+
 ## Environment Success Memo
 
 Current local environment status:
