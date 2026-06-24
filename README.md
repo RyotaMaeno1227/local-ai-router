@@ -430,6 +430,16 @@ repair_success_count: 0 -> 1
 
 `openai/gpt-oss-20b` remains inference-only on RTX5080. No fine-tuning, LoRA dry-run, or adapter training was run for M7b.
 
+## M8 Router Model Candidate Survey
+
+M8 starts the survey of router model candidates beyond `openai/gpt-oss-20b`.
+The candidate comparison is in `docs/router_model_candidates.md`.
+
+The first experiment target is `Qwen/Qwen3.5-4B`, pending a separate approval
+step for any model download, model load, baseline eval, or LoRA dry-run.
+`openai/gpt-oss-20b` remains the inference-only router/verifier baseline on
+RTX5080.
+
 ## Environment Success Memo
 
 Current local environment status:
