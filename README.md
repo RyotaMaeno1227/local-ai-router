@@ -472,6 +472,46 @@ Qwen3.5 4B is viable as a base router candidate, with lower risk
 underestimation but weaker `needed_tools` containment than GPT-OSS
 prompt-router v2. Any LoRA/QLoRA work still requires separate approval.
 
+## M10 Qwen3.5 4B LoRA Dry-Run
+
+M10 ran only a LoRA dry-run for `Qwen/Qwen3.5-4B`. Full fine-tuning and
+150-row training were not run.
+
+`scripts/train_router_lora.py` now supports the Qwen multimodal text-only path:
+
+- `--model-family multimodal-lm`
+- `--processor-name`
+- `--torch-dtype`
+- `--list-lora-targets`
+
+The target module check found:
+
+```text
+q_proj: 8
+v_proj: 8
+k_proj: 8
+o_proj: 8
+gate_proj: 32
+up_proj: 32
+down_proj: 32
+```
+
+Dry-run results:
+
+```text
+2 samples:  q_proj, r=2, trainable params 172,032, train_loss 2.987, adapter saved
+10 samples: q_proj/v_proj, r=4, trainable params 458,752, train_loss 2.771, adapter saved
+```
+
+No CUDA OOM occurred, no NaN loss was observed, and adapters were saved under
+`adapters/dryrun-qwen35-4b-router-lora-*`. Adapter artifacts and `logs/*.md`
+remain git-ignored.
+
+M9 failure analysis for future approved training is in
+`docs/qwen35_4b_eval_failure_analysis.md`. The main priorities are canonical
+verification check names, richer `needed_tools`, research novelty routing, and
+conservative nonlinear/contact risk calibration.
+
 ## Environment Success Memo
 
 Current local environment status:

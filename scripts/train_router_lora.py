@@ -36,10 +36,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-modules", nargs="+", default=["q_proj", "v_proj"])
     parser.add_argument("--trainer", choices=("trl", "transformers"), default="trl")
     parser.add_argument("--load-strategy", choices=("mxfp4-auto", "bnb4", "bf16"), default="mxfp4-auto")
+    parser.add_argument("--model-family", choices=("causal-lm", "multimodal-lm"), default="causal-lm")
+    parser.add_argument("--processor-name", default=None, help="Optional processor path/name for multimodal models.")
+    parser.add_argument(
+        "--torch-dtype",
+        choices=("auto", "bfloat16", "float16", "float32"),
+        default="auto",
+        help="Model torch dtype. For Qwen dry-runs use bfloat16.",
+    )
     parser.add_argument("--bf16", action="store_true", help="Enable bf16 training args. Default is disabled.")
     parser.add_argument("--no-4bit", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--local-files-only", action="store_true", help="Do not download missing model files.")
     parser.add_argument("--trust-remote-code", action="store_true")
+    parser.add_argument("--list-lora-targets", action="store_true", help="Load model, list candidate LoRA modules, and exit.")
     parser.add_argument("--run-train", action="store_true", help="Actually load the model and train.")
     return parser.parse_args()
 
@@ -70,9 +79,36 @@ def fallback_format(messages: list[dict[str, str]]) -> str:
     return "\n".join(chunks).strip()
 
 
-def format_messages(tokenizer: Any, messages: list[dict[str, str]]) -> str:
+def text_tokenizer(processor_or_tokenizer: Any) -> Any:
+    return getattr(processor_or_tokenizer, "tokenizer", processor_or_tokenizer)
+
+
+def format_messages(processor_or_tokenizer: Any, messages: list[dict[str, str]]) -> str:
+    if hasattr(processor_or_tokenizer, "apply_chat_template"):
+        try:
+            return processor_or_tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=False,
+                enable_thinking=False,
+            )
+        except TypeError:
+            return processor_or_tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=False,
+            )
+    tokenizer = text_tokenizer(processor_or_tokenizer)
     if getattr(tokenizer, "chat_template", None):
-        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+        try:
+            return tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=False,
+                enable_thinking=False,
+            )
+        except TypeError:
+            return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
     return fallback_format(messages)
 
 
@@ -125,6 +161,26 @@ def optimizer_name(args: argparse.Namespace) -> str:
     return "paged_adamw_8bit" if args.load_strategy == "bnb4" else "adamw_torch"
 
 
+def torch_dtype_value(name: str) -> Any:
+    if name == "auto":
+        return "auto"
+    return {
+        "bfloat16": torch.bfloat16,
+        "float16": torch.float16,
+        "float32": torch.float32,
+    }[name]
+
+
+def model_torch_dtype(args: argparse.Namespace) -> Any:
+    if args.torch_dtype != "auto":
+        return torch_dtype_value(args.torch_dtype)
+    if args.load_strategy == "mxfp4-auto":
+        return "auto"
+    if args.load_strategy == "bf16":
+        return torch.bfloat16
+    return "auto"
+
+
 def ensure_target_modules_exist(model: Any, target_modules: list[str]) -> None:
     counts = {target: 0 for target in target_modules}
     for name, _module in model.named_modules():
@@ -139,6 +195,24 @@ def ensure_target_modules_exist(model: Any, target_modules: list[str]) -> None:
         print(f"  {target}: {count}")
     if missing:
         raise ValueError(f"target_modules not found: {', '.join(missing)}")
+
+
+def list_lora_target_modules(model: Any, target_modules: list[str]) -> None:
+    candidates = list(dict.fromkeys([*target_modules, "q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+    matches: dict[str, list[str]] = {candidate: [] for candidate in candidates}
+    for name, _module in model.named_modules():
+        leaf_name = name.rsplit(".", maxsplit=1)[-1]
+        for candidate in candidates:
+            if leaf_name == candidate or name.endswith(candidate):
+                matches[candidate].append(name)
+
+    print("LoRA target candidate module counts:")
+    for candidate, names in matches.items():
+        print(f"  {candidate}: {len(names)}")
+        for name in names[:20]:
+            print(f"    - {name}")
+        if len(names) > 20:
+            print(f"    ... {len(names) - 20} more")
 
 
 def print_trainable_parameters(model: Any) -> None:
@@ -170,7 +244,7 @@ def add_nan_guard_callback(trainer: Any) -> None:
 
 
 def ensure_training_strategy_allowed(args: argparse.Namespace) -> None:
-    if args.run_train and args.load_strategy == "mxfp4-auto":
+    if args.run_train and args.load_strategy == "mxfp4-auto" and "gpt-oss" in args.model_name.lower():
         raise SystemExit(
             "MXFP4 quantized gpt-oss training is not supported by standard Transformers/PEFT path.\n"
             "Use this model as inference-only on RTX5080.\n"
@@ -179,18 +253,14 @@ def ensure_training_strategy_allowed(args: argparse.Namespace) -> None:
         )
 
 
-def build_model_and_tokenizer(args: argparse.Namespace) -> tuple[Any, Any]:
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        args.model_name,
-        local_files_only=args.local_files_only,
-        trust_remote_code=args.trust_remote_code,
-    )
+def ensure_tokenizer_padding(processor_or_tokenizer: Any) -> None:
+    tokenizer = text_tokenizer(processor_or_tokenizer)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
+
+def build_model_and_processor(args: argparse.Namespace) -> tuple[Any, Any]:
     model_kwargs: dict[str, Any] = {
         "device_map": "auto",
         "local_files_only": args.local_files_only,
@@ -202,19 +272,45 @@ def build_model_and_tokenizer(args: argparse.Namespace) -> tuple[Any, Any]:
     q_config = quantization_config(args.load_strategy)
     if q_config is not None:
         model_kwargs["quantization_config"] = q_config
-    elif args.load_strategy == "mxfp4-auto":
-        model_kwargs["torch_dtype"] = "auto"
     else:
-        model_kwargs["torch_dtype"] = torch.bfloat16
+        model_kwargs["torch_dtype"] = model_torch_dtype(args)
 
     print(f"Loading model with strategy: {args.load_strategy}")
     print(f"Model kwargs: torch_dtype={model_kwargs.get('torch_dtype')}, device_map={model_kwargs.get('device_map')}")
-    model = AutoModelForCausalLM.from_pretrained(args.model_name, **model_kwargs)
+
+    if args.model_family == "multimodal-lm":
+        try:
+            from transformers import AutoModelForMultimodalLM, AutoProcessor
+        except ImportError as exc:
+            raise RuntimeError(
+                "AutoModelForMultimodalLM is not available in the current Transformers install. "
+                "Stop here; do not install another library without approval."
+            ) from exc
+        processor = AutoProcessor.from_pretrained(
+            args.processor_name or args.model_name,
+            local_files_only=args.local_files_only,
+            trust_remote_code=args.trust_remote_code,
+        )
+        ensure_tokenizer_padding(processor)
+        model = AutoModelForMultimodalLM.from_pretrained(args.model_name, **model_kwargs)
+    else:
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        processor = AutoTokenizer.from_pretrained(
+            args.model_name,
+            local_files_only=args.local_files_only,
+            trust_remote_code=args.trust_remote_code,
+        )
+        ensure_tokenizer_padding(processor)
+        model = AutoModelForCausalLM.from_pretrained(args.model_name, **model_kwargs)
+
     if q_config is not None:
         from peft import prepare_model_for_kbit_training
 
         model = prepare_model_for_kbit_training(model)
-    return model, tokenizer
+    if hasattr(model, "config"):
+        model.config.use_cache = False
+    return model, processor
 
 
 def train_with_trl(args: argparse.Namespace, model: Any, tokenizer: Any, train_dataset: Any, lora_config: Any) -> Any:
@@ -322,7 +418,7 @@ def main() -> None:
     dataset_path = Path(args.dataset)
     ensure_training_strategy_allowed(args)
 
-    if not args.run_train:
+    if not args.run_train and not args.list_lora_targets:
         preview_dataset(dataset_path, max_samples=args.max_samples)
         print("\nTraining was not started.")
         print("Add --run-train only after baseline eval and human approval.")
@@ -330,9 +426,16 @@ def main() -> None:
 
     from peft import LoraConfig, TaskType
 
-    model, tokenizer = build_model_and_tokenizer(args)
+    model, processor = build_model_and_processor(args)
+    tokenizer = text_tokenizer(processor)
+
+    if args.list_lora_targets:
+        list_lora_target_modules(model, args.target_modules)
+        print("\nTraining was not started.")
+        return
+
     ensure_target_modules_exist(model, args.target_modules)
-    train_dataset = load_training_dataset(dataset_path, tokenizer, max_samples=args.max_samples)
+    train_dataset = load_training_dataset(dataset_path, processor, max_samples=args.max_samples)
     print(f"Training examples loaded: {len(train_dataset)}")
     lora_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
@@ -343,12 +446,14 @@ def main() -> None:
         bias="none",
     )
 
-    if args.trainer == "trl":
+    if args.trainer == "trl" and args.model_family != "multimodal-lm":
         trainer = train_with_trl(args, model, tokenizer, train_dataset, lora_config)
         print_trainable_parameters(trainer.model)
     else:
         from peft import get_peft_model
 
+        if args.trainer == "trl" and args.model_family == "multimodal-lm":
+            print("Using transformers Trainer for multimodal-lm text-only dry-run.")
         model = get_peft_model(model, lora_config)
         print_trainable_parameters(model)
         trainer = train_with_transformers(args, model, tokenizer, train_dataset)
@@ -356,7 +461,10 @@ def main() -> None:
     add_nan_guard_callback(trainer)
     trainer.train()
     trainer.save_model(args.output_dir)
-    tokenizer.save_pretrained(args.output_dir)
+    if hasattr(processor, "save_pretrained"):
+        processor.save_pretrained(args.output_dir)
+    else:
+        tokenizer.save_pretrained(args.output_dir)
     print(f"Saved LoRA adapter to {args.output_dir}")
 
 
