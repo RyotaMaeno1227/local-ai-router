@@ -318,6 +318,49 @@ Fine-tuning has still not been run. Run schema validation before any future trai
 python scripts/validate_router_json.py data/router_sft_001.jsonl --mode sft-jsonl
 ```
 
+## M6.5 Pre-LoRA Audit
+
+M6.5 adds a pre-LoRA audit step for the expanded SFT dataset. It does not load the model and does not start training.
+
+Run the audit with:
+
+```bash
+python scripts/audit_router_sft.py data/router_sft_001.jsonl evals/router_eval_001.jsonl
+```
+
+The audit reports:
+
+- total rows
+- mode, risk, and focus distributions
+- empty or generic-only `verification.checks`
+- empty `needed_tools`
+- `request_more_info` and `local_rag` counts
+- schema-valid row count
+- exact and near-duplicate prompt overlap between SFT and eval data
+
+M6.5 audit result:
+
+```text
+total_rows: 150
+schema_valid_count: 150
+schema_invalid_count: 0
+parse_error_count: 0
+request_more_info_count: 16
+local_rag_count: 3
+needed_tools_empty_count: 27
+verification_empty_count: 0
+verification_generic_only_count: 0
+exact_match_count: 0
+similar_candidate_count: 0
+```
+
+Environment snapshots for the `gptoss20b` conda environment are stored in:
+
+- `requirements-gptoss20b-freeze.txt`
+- `environment-conda-list-gptoss20b.txt`
+
+`scripts/train_router_lora.py` supports `--max-samples` for future human-approved small training runs, but training still requires explicit `--run-train`. Do not run `--run-train` until a human approves the next milestone.
+
 ## Environment Success Memo
 
 Current local environment status:

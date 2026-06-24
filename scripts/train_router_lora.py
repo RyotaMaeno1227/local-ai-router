@@ -28,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=2e-4)
     parser.add_argument("--num-train-epochs", type=float, default=1.0)
+    parser.add_argument("--max-samples", type=int, default=None, help="Limit SFT rows for a future approved test run.")
     parser.add_argument("--lora-r", type=int, default=4)
     parser.add_argument("--lora-alpha", type=int, default=8)
     parser.add_argument("--lora-dropout", type=float, default=0.05)
@@ -72,10 +73,17 @@ def format_messages(tokenizer: Any, messages: list[dict[str, str]]) -> str:
     return fallback_format(messages)
 
 
-def preview_dataset(path: Path) -> None:
+def preview_dataset(path: Path, max_samples: int | None = None) -> None:
     rows = read_jsonl(path)
+    total_rows = len(rows)
+    if max_samples is not None:
+        if max_samples <= 0:
+            raise ValueError("--max-samples must be positive")
+        rows = rows[:max_samples]
     print(f"Dataset: {path}")
     print(f"Examples: {len(rows)}")
+    if max_samples is not None:
+        print(f"Total examples before --max-samples: {total_rows}")
     first = rows[0]["messages"] if rows else [{"role": "system", "content": SYSTEM_FALLBACK}]
     print("\nFirst formatted example preview:")
     print(fallback_format(first)[:1600])
@@ -94,10 +102,14 @@ def quantization_config(load_in_4bit: bool) -> Any | None:
     )
 
 
-def load_training_dataset(dataset_path: Path, tokenizer: Any) -> Any:
+def load_training_dataset(dataset_path: Path, tokenizer: Any, max_samples: int | None = None) -> Any:
     from datasets import load_dataset
 
     dataset = load_dataset("json", data_files=str(dataset_path), split="train")
+    if max_samples is not None:
+        if max_samples <= 0:
+            raise ValueError("--max-samples must be positive")
+        dataset = dataset.select(range(min(max_samples, len(dataset))))
 
     def to_text(example: dict[str, Any]) -> dict[str, str]:
         return {"text": format_messages(tokenizer, example["messages"])}
@@ -237,7 +249,7 @@ def main() -> None:
     dataset_path = Path(args.dataset)
 
     if not args.run_train:
-        preview_dataset(dataset_path)
+        preview_dataset(dataset_path, max_samples=args.max_samples)
         print("\nTraining was not started.")
         print("Add --run-train only after baseline eval and human approval.")
         return
@@ -245,7 +257,7 @@ def main() -> None:
     from peft import LoraConfig, TaskType
 
     model, tokenizer = build_model_and_tokenizer(args)
-    train_dataset = load_training_dataset(dataset_path, tokenizer)
+    train_dataset = load_training_dataset(dataset_path, tokenizer, max_samples=args.max_samples)
     lora_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
         r=args.lora_r,
