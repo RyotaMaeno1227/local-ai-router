@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "eval_file": "evals/router_eval_001.jsonl",
+    "generated_at": "2026-06-24T14:40:46Z",
+    "load_in_4bit": false,
+    "local_files_only": true,
+    "max_cases": 3,
+    "max_new_tokens": 256,
+    "model_name": "openai/gpt-oss-20b",
+    "results_path": "eval_results/base_eval_smoke_001.json",
+    "schema": "schemas/router_output.schema.json",
+    "temperature": 0.0
+  },
+  "metrics": {
+    "expected_mode_match_count": 2,
+    "final_channel_found_count": 3,
+    "fusion_policy_match_count": 3,
+    "json_valid_count": 3,
+    "must_tools_contained_count": 1,
+    "must_verification_contained_count": 0,
+    "request_more_info_count": 1,
+    "risk_underestimated_count": 2,
+    "schema_valid_count": 3,
+    "total": 3
+  },
+  "results": [
+    {
+      "category": "FEM基礎",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"mathematics\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_001",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "mathematics",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 893,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"explanation\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_002",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "explanation",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 596,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"FEM基礎\",\"domain\":\"Finite Element Analysis\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient data to compute final displacement without boundary condition file.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data available.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_003",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "Finite Element Analysis",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data available.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "FEM基礎",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient data to compute final displacement without boundary condition file.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 743,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    }
+  ]
+}

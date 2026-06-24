@@ -1,0 +1,2414 @@
+{
+  "meta": {
+    "eval_file": "evals/router_eval_001.jsonl",
+    "generated_at": "2026-06-24T14:48:19Z",
+    "load_in_4bit": false,
+    "local_files_only": true,
+    "max_cases": null,
+    "max_new_tokens": 256,
+    "model_name": "openai/gpt-oss-20b",
+    "predictions_path": "eval_results/base_predictions_001.jsonl",
+    "results_path": "eval_results/base_eval_001.json",
+    "schema": "schemas/router_output.schema.json",
+    "temperature": 0.0
+  },
+  "metrics": {
+    "expected_mode_match_count": 16,
+    "final_channel_found_count": 49,
+    "fusion_policy_match_count": 46,
+    "json_valid_count": 50,
+    "must_tools_contained_count": 9,
+    "must_verification_contained_count": 0,
+    "request_more_info_count": 24,
+    "risk_underestimated_count": 35,
+    "schema_valid_count": 44,
+    "total": 50
+  },
+  "results": [
+    {
+      "category": "FEM基礎",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"mathematics\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_001",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "mathematics",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 893,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"explanation\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_002",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "explanation",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 596,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"FEM基礎\",\"domain\":\"Finite Element Analysis\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient data to compute final displacement without boundary condition file.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data available.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_003",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "Finite Element Analysis",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data available.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "FEM基礎",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient data to compute final displacement without boundary condition file.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 743,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"local_rag\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"Verify that L2 errors decrease approximately by a factor of 4 when mesh size is halved\"],\"reason\":\"Second-order convergence implies error ∝ h^2\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_004",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_rag",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient",
+          "type": null
+        },
+        "mode": "local_rag",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [
+            "Verify that L2 errors decrease approximately by a factor of 4 when mesh size is halved"
+          ],
+          "reason": "Second-order convergence implies error ∝ h^2",
+          "required": true
+        }
+      },
+      "raw_output_chars": 1175,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"scientific_router_decision\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No discretization note provided to evaluate units.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No content to fuse.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_005",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No content to fuse.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "scientific_router_decision",
+        "verification": {
+          "checks": [],
+          "reason": "No discretization note provided to evaluate units.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 781,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "external_expert",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"safety_review\",\"domain\":\"FEM\",\"risk\":\"medium\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient details about load conditions, material properties, and boundary conditions to assess validity of stress results.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional models or experts required at this stage.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_006",
+      "json_valid": true,
+      "min_risk": "critical",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional models or experts required at this stage.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "safety_review",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient details about load conditions, material properties, and boundary conditions to assess validity of stress results.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 959,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_rag",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"question_answer\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No local project notes provided to determine integration type.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data available.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_007",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data available.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "question_answer",
+        "verification": {
+          "checks": [],
+          "reason": "No local project notes provided to determine integration type.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 822,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"assessment\",\"domain\":\"FEM\",\"risk\":\"medium\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"Determine if mass lumping changes transient response beyond acceptable tolerance\",\"Compare eigenvalues and modal participation with and without lumping\"],\"reason\":\"Mass lumping can alter dynamic behavior; verification ensures accuracy\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":true}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_008",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": true,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "assessment",
+        "verification": {
+          "checks": [
+            "Determine if mass lumping changes transient response beyond acceptable tolerance",
+            "Compare eigenvalues and modal participation with and without lumping"
+          ],
+          "reason": "Mass lumping can alter dynamic behavior; verification ensures accuracy",
+          "required": true
+        }
+      },
+      "raw_output_chars": 1148,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"question\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_009",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "question",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 705,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"comparison\",\"domain\":\"FEM\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient input data provided.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data to fuse.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_010",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data to fuse.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "comparison",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient input data provided.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 643,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"nonlinear_fem\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":null,\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_011",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": null,
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 783,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [
+        "router_eval_001_011: needed_tools must be array, got null"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"simulation\",\"domain\":\"nonlinear_fem\",\"risk\":\"medium\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Missing material constants required for simulation.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional models needed.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_012",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional models needed.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "simulation",
+        "verification": {
+          "checks": [],
+          "reason": "Missing material constants required for simulation.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 632,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"nonlinear_fem\",\"risk\":\"medium\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"Check for sign consistency in plastic multiplier update equation\",\"Verify that yield function is evaluated correctly before update\",\"Ensure that the return-mapping algorithm uses correct flow rule sign\"],\"reason\":\"Sign errors can lead to non-physical results and convergence issues in FEM plasticity.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient for sign error inspection\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_013",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient for sign error inspection",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [
+            "Check for sign consistency in plastic multiplier update equation",
+            "Verify that yield function is evaluated correctly before update",
+            "Ensure that the return-mapping algorithm uses correct flow rule sign"
+          ],
+          "reason": "Sign errors can lead to non-physical results and convergence issues in FEM plasticity.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 917,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"explanation\",\"domain\":\"nonlinear_fem\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"response contains explanation of load stepping and arc-length control usage in nonlinear equilibrium problems\"],\"reason\":\"Ensure answer addresses the requested topic\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"single model sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_014",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "single model sufficient",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "explanation",
+        "verification": {
+          "checks": [
+            "response contains explanation of load stepping and arc-length control usage in nonlinear equilibrium problems"
+          ],
+          "reason": "Ensure answer addresses the requested topic",
+          "required": true
+        }
+      },
+      "raw_output_chars": 787,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"nonlinear_fem\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"input completeness\",\"data validity\"],\"reason\":\"Ensure all benchmark error data are provided and correctly formatted.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient for monotonicity check.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_015",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient for monotonicity check.",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [
+            "input completeness",
+            "data validity"
+          ],
+          "reason": "Ensure all benchmark error data are provided and correctly formatted.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 940,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "web_or_rag_required",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"verification\",\"domain\":\"nonlinear_fem\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"reference_text_provided\"],\"reason\":\"External reference text is required to verify the claim.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data available.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_016",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data available.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "verification",
+        "verification": {
+          "checks": [
+            "reference_text_provided"
+          ],
+          "reason": "External reference text is required to verify the claim.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 721,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"diagnosis\",\"domain\":\"nonlinear_fem\",\"risk\":\"medium\",\"mode\":\"local_rag\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_017",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_rag",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion",
+          "type": null
+        },
+        "mode": "local_rag",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "diagnosis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 739,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "self_fusion_lite",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"decision\",\"domain\":\"nonlinear_fem\",\"risk\":\"medium\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": false,
+      "id": "router_eval_001_018",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "decision",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 597,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "code_exec",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"nonlinear_fem\",\"risk\":\"low\",\"mode\":\"code_exec\",\"needed_tools\":null,\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_019",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "code_exec",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "code_exec",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": null,
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 767,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [
+        "router_eval_001_019: needed_tools must be array, got null"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "非線形FEM",
+      "expected_mode": "external_expert",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"approval\",\"domain\":\"nonlinear_fem\",\"risk\":\"high\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient validation data provided.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional models needed for this request.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_020",
+      "json_valid": true,
+      "min_risk": "critical",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "high",
+      "prediction": {
+        "domain": "nonlinear_fem",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional models needed for this request.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "high",
+        "task_type": "approval",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient validation data provided.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 762,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"postprocess\",\"domain\":\"contact_analysis\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"input_csv_format\",\"tolerance_value_provided\"],\"reason\":\"Ensure data integrity and user-specified tolerance\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_021",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "contact_analysis",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "postprocess",
+        "verification": {
+          "checks": [
+            "input_csv_format",
+            "tolerance_value_provided"
+          ],
+          "reason": "Ensure data integrity and user-specified tolerance",
+          "required": true
+        }
+      },
+      "raw_output_chars": 666,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"wear_risk_assessment\",\"domain\":\"contact_analysis\",\"risk\":\"medium\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient data to determine wear risk without friction coefficient.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data available.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_022",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "contact_analysis",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data available.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "wear_risk_assessment",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient data to determine wear risk without friction coefficient.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 714,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"explanation\",\"domain\":\"contact_analysis\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_023",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "contact_analysis",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "explanation",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 578,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "web_or_rag_required",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"information_retrieval\",\"domain\":\"engineering\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No additional context provided to determine the keyword.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion without context.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_024",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "engineering",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion without context.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "information_retrieval",
+        "verification": {
+          "checks": [],
+          "reason": "No additional context provided to determine the keyword.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 754,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "external_expert",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"review\",\"domain\":\"engineering\",\"risk\":\"high\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient details to assess safety-critical analysis.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data provided.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_025",
+      "json_valid": true,
+      "min_risk": "critical",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "high",
+      "prediction": {
+        "domain": "engineering",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data provided.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "high",
+        "task_type": "review",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient details to assess safety-critical analysis.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 743,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"contact_solver\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_026",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "contact_solver",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 678,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "local_answer",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"advice\",\"domain\":\"contact_analysis\",\"risk\":\"low\",\"mode\":\"local_rag\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"single model sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_027",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_rag",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "contact_analysis",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "single model sufficient",
+          "type": null
+        },
+        "mode": "local_rag",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "advice",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 635,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"analysis\",\"domain\":\"geometry\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":null,\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_028",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "geometry",
+        "final_answer_policy": {
+          "format": "plain",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": null,
+        "risk": "low",
+        "task_type": "analysis",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 869,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [
+        "router_eval_001_028: needed_tools must be array, got null"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "managed_fusion",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"contact_model_review\",\"domain\":\"mechanical_engineering\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": false,
+      "id": "router_eval_001_029",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "mechanical_engineering",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "contact_model_review",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 972,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "接触解析",
+      "expected_mode": "external_expert",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"contact_safety_conclusion\",\"domain\":\"contact_analysis\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No fusion needed\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_030",
+      "json_valid": true,
+      "min_risk": "critical",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "contact_analysis",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No fusion needed",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "contact_safety_conclusion",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 649,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"code_review\",\"domain\":\"software_engineering\",\"risk\":\"medium\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No code provided to analyze.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data needed.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_031",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "software_engineering",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data needed.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "code_review",
+        "verification": {
+          "checks": [],
+          "reason": "No code provided to analyze.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 685,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"unit_test_selection\",\"domain\":\"software_testing\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional fusion needed\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_032",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "software_testing",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional fusion needed",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "unit_test_selection",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 957,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"code_execution\",\"domain\":\"software_development\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_033",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "software_development",
+        "final_answer_policy": {
+          "format": "plain",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "code_execution",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 870,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"code_review\",\"domain\":\"software_engineering\",\"risk\":\"medium\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"code_diff_parsed\",\"tolerance_change_identified\",\"numerical_risk_assessed\"],\"reason\":\"Ensure accurate extraction and risk assessment of solver tolerance changes.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient for this task.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_034",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "software_engineering",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient for this task.",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "code_review",
+        "verification": {
+          "checks": [
+            "code_diff_parsed",
+            "tolerance_change_identified",
+            "numerical_risk_assessed"
+          ],
+          "reason": "Ensure accurate extraction and risk assessment of solver tolerance changes.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 907,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "local_answer",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"explain\",\"domain\":\"software\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_035",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "software",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "explain",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 674,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"validation\",\"domain\":\"code\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"schema_compliance\"],\"reason\":\"Ensure router output matches the fixed schema.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single model sufficient for schema validation.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"json\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_036",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "code",
+        "final_answer_policy": {
+          "format": "json",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single model sufficient for schema validation.",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "validation",
+        "verification": {
+          "checks": [
+            "schema_compliance"
+          ],
+          "reason": "Ensure router output matches the fixed schema.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 1032,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"コード確認\",\"domain\":\"ソフトウェア開発\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"command_line\",\"input_size\"],\"reason\":\"Benchmark requires command line and input size to evaluate solver performance.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion when information is missing.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_037",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "ソフトウェア開発",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion when information is missing.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "コード確認",
+        "verification": {
+          "checks": [
+            "command_line",
+            "input_size"
+          ],
+          "reason": "Benchmark requires command line and input size to evaluate solver performance.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 648,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"debug\",\"domain\":\"software\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No logs or nvidia-smi output provided.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data to fuse.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_038",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "software",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data to fuse.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "debug",
+        "verification": {
+          "checks": [],
+          "reason": "No logs or nvidia-smi output provided.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 823,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"code_confirmation\",\"domain\":\"software\",\"risk\":\"high\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"User requests execution of an unreviewed shell command that could modify the entire project tree, which poses a significant security risk.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion in this context.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_039",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "high",
+      "prediction": {
+        "domain": "software",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion in this context.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "high",
+        "task_type": "code_confirmation",
+        "verification": {
+          "checks": [],
+          "reason": "User requests execution of an unreviewed shell command that could modify the entire project tree, which poses a significant security risk.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 1081,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "コード確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"code_verification\",\"domain\":\"software\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"User provides environment log\"],\"reason\":\"Need log to analyze package versions.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data needed yet.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_040",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "software",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data needed yet.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "code_verification",
+        "verification": {
+          "checks": [
+            "User provides environment log"
+          ],
+          "reason": "Need log to analyze package versions.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 820,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "web_or_rag_required",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"FEM contact methods\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient evidence of related work to assess novelty.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No need for fusion without additional data.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_041",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM contact methods",
+        "final_answer_policy": {
+          "format": "plain",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No need for fusion without additional data.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient evidence of related work to assess novelty.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 804,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "external_expert",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"数学/統計\",\"risk\":\"medium\",\"mode\":\"external_expert\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single expert review sufficient\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":true}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_042",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "external_expert",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "数学/統計",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": true,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single expert review sufficient",
+          "type": null
+        },
+        "mode": "external_expert",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "medium",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 792,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "managed_fusion",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"学術比較\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": false,
+      "id": "router_eval_001_043",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "学術比較",
+        "final_answer_policy": {
+          "format": "plain",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 735,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"学術執筆\",\"risk\":\"high\",\"mode\":\"request_more_info\",\"needed_tools\":null,\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No fusion needed\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_044",
+      "json_valid": true,
+      "min_risk": "high",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "high",
+      "prediction": {
+        "domain": "学術執筆",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No fusion needed",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": null,
+        "risk": "high",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 569,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [
+        "router_eval_001_044: needed_tools must be array, got null"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"summarize_and_extract_claims\",\"domain\":\"academic\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":null,\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data required\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_045",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "academic",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data required",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": null,
+        "risk": "low",
+        "task_type": "summarize_and_extract_claims",
+        "verification": {
+          "checks": [],
+          "reason": "",
+          "required": false
+        }
+      },
+      "raw_output_chars": 789,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [
+        "router_eval_001_045: needed_tools must be array, got null"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "web_or_rag_required",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"research\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"No method details provided.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No content to fuse.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_046",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "research",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No content to fuse.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "No method details provided.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 624,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "managed_fusion",
+      "expected_mode_match": false,
+      "final_channel_found": false,
+      "final_text": "<|channel|>analysis<|message|>We need to output JSON with fields. Since we have enough info? We have category and user request. We need to decide mode. Probably need more info? The request: \"Two synthetic reviewer reports disagree on whether the numerical evidence is sufficient.\" We need to decide? We can answer? Probably need to analyze. But we can provide decision: local_rag? We need to provide final answer? The instruction: Return only one final JSON object for a scientific router decision. So we decide mode. We have enough info to answer? We can provide local_rag? But we need to decide risk: low. needed_tools none. needed_models openai/gpt-oss-20b. verification required? maybe not. fusion_policy? maybe not. final_answer_policy? format: plain text? include_uncertainty true? include_sources true? Let's produce.<|end|><|start|>assistant<|channel|>final<|message|>{\"task_type\":\"論文・新規性確認\",\"domain\":\"scientific review\",\"risk\":\"low\",\"mode\":\"local_rag\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"\",\"panel_size",
+      "fusion_policy_match": false,
+      "id": "router_eval_001_047",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": null,
+      "predicted_risk": "",
+      "prediction": {
+        "checks": [],
+        "reason": "",
+        "required": false
+      },
+      "raw_output_chars": 1144,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [
+        "router_eval_001_047: task_type is required",
+        "router_eval_001_047: domain is required",
+        "router_eval_001_047: risk is required",
+        "router_eval_001_047: mode is required",
+        "router_eval_001_047: needed_tools is required",
+        "router_eval_001_047: needed_models is required",
+        "router_eval_001_047: verification is required",
+        "router_eval_001_047: fusion_policy is required",
+        "router_eval_001_047: final_answer_policy is required",
+        "router_eval_001_047: checks is not allowed",
+        "router_eval_001_047: reason is not allowed",
+        "router_eval_001_047: required is not allowed"
+      ],
+      "schema_valid": false
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "code_exec",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"科学\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient data provided to verify convergence plot.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No external data or models needed for fusion.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":false,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_048",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "科学",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": false,
+          "include_uncertainty": false
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No external data or models needed for fusion.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient data provided to verify convergence plot.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 816,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "external_expert",
+      "expected_mode_match": false,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"安全性評価\",\"risk\":\"high\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"確認対象の主張が安全性に関わるか\",\"論文の主張が実験データや既存研究で裏付けられているか\",\"安全性に関わる規格・基準に準拠しているか\"],\"reason\":\"安全性に関わる主張は慎重に検証が必要\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"単一モデルで十分\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"plain_text\",\"include_uncertainty\":true,\"include_sources\":true}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_049",
+      "json_valid": true,
+      "min_risk": "critical",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "high",
+      "prediction": {
+        "domain": "安全性評価",
+        "final_answer_policy": {
+          "format": "plain_text",
+          "include_sources": true,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "単一モデルで十分",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "high",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [
+            "確認対象の主張が安全性に関わるか",
+            "論文の主張が実験データや既存研究で裏付けられているか",
+            "安全性に関わる規格・基準に準拠しているか"
+          ],
+          "reason": "安全性に関わる主張は慎重に検証が必要",
+          "required": true
+        }
+      },
+      "raw_output_chars": 806,
+      "request_more_info": false,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "論文・新規性確認",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": true,
+      "final_text": "{\"task_type\":\"論文・新規性確認\",\"domain\":\"学術評価\",\"risk\":\"low\",\"mode\":\"request_more_info\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":false,\"checks\":[],\"reason\":\"Insufficient information to judge novelty based solely on title.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No additional data available for fusion.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"text\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_050",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": false,
+      "must_verification_contained": false,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "学術評価",
+        "final_answer_policy": {
+          "format": "text",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No additional data available for fusion.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "論文・新規性確認",
+        "verification": {
+          "checks": [],
+          "reason": "Insufficient information to judge novelty based solely on title.",
+          "required": false
+        }
+      },
+      "raw_output_chars": 662,
+      "request_more_info": true,
+      "risk_underestimated": true,
+      "schema_errors": [],
+      "schema_valid": true
+    }
+  ]
+}

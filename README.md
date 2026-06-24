@@ -235,6 +235,64 @@ python scripts/validate_router_json.py --mode sft-jsonl path/to/router_sft.jsonl
 
 M4 updates `data/router_sft_001.jsonl` to the fixed router schema and expands `evals/router_eval_001.jsonl` to 50 synthetic eval rows.
 
+## Base Router Eval
+
+M5 evaluates the unfine-tuned `openai/gpt-oss-20b` base model against the 50-row router eval set. Use the `gptoss20b` conda environment and prefer `--local-files-only` to avoid model downloads.
+
+Smoke eval with 3 cases:
+
+```bash
+conda run -n gptoss20b python scripts/eval_router.py \
+  --eval-file evals/router_eval_001.jsonl \
+  --schema schemas/router_output.schema.json \
+  --model-name openai/gpt-oss-20b \
+  --max-cases 3 \
+  --local-files-only \
+  --max-new-tokens 256 \
+  --temperature 0 \
+  --results eval_results/base_eval_smoke_001.json \
+  --markdown-log logs/base_eval_smoke_001.md
+```
+
+Full 50-case base eval:
+
+```bash
+conda run -n gptoss20b python scripts/eval_router.py \
+  --eval-file evals/router_eval_001.jsonl \
+  --schema schemas/router_output.schema.json \
+  --model-name openai/gpt-oss-20b \
+  --local-files-only \
+  --max-new-tokens 256 \
+  --temperature 0 \
+  --results eval_results/base_eval_001.json \
+  --predictions-out eval_results/base_predictions_001.jsonl \
+  --markdown-log logs/base_eval_001.md
+```
+
+Saved result files:
+
+- `eval_results/base_eval_smoke_001.json`: 3-case smoke metrics and per-case details.
+- `eval_results/base_eval_001.json`: 50-case metrics and per-case details.
+- `eval_results/base_predictions_001.jsonl`: final-channel model predictions for the 50-case run.
+- `logs/base_eval_smoke_001.md` and `logs/base_eval_001.md`: operational logs, ignored by git.
+
+M5 base eval result:
+
+```json
+{
+  "total": 50,
+  "json_valid_count": 50,
+  "schema_valid_count": 44,
+  "expected_mode_match_count": 16,
+  "must_tools_contained_count": 9,
+  "must_verification_contained_count": 0,
+  "risk_underestimated_count": 35,
+  "fusion_policy_match_count": 46,
+  "request_more_info_count": 24,
+  "final_channel_found_count": 49
+}
+```
+
 ## Environment Success Memo
 
 Current local environment status:
