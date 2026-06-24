@@ -14,8 +14,9 @@ from typing import Any
 RISK_ORDER = {"low": 1, "medium": 2, "high": 3, "critical": 4}
 SYSTEM_PROMPT = (
     "You are a local scientific AI router/verifier. Output only compact JSON "
-    "with keys mode, tools, risk, needs_human_approval, next_action, checks, notes. "
-    "Allowed risk values: low, medium, high, critical. Do not include chain-of-thought."
+    "with keys task_type, domain, risk, mode, needed_tools, needed_models, "
+    "verification, fusion_policy, final_answer_policy. Allowed risk values: "
+    "low, medium, high, critical. Do not include chain-of-thought."
 )
 
 
@@ -72,6 +73,13 @@ def normalized_tools(value: Any) -> set[str]:
     if isinstance(value, list):
         return {str(item).strip().lower() for item in value}
     return set()
+
+
+def prompt_for_row(row: dict[str, Any]) -> str:
+    prompt = row.get("prompt", row.get("user"))
+    if not isinstance(prompt, str) or not prompt:
+        raise ValueError(f"{row.get('id', '<missing-id>')}: missing prompt/user")
+    return prompt
 
 
 def load_predictions(path: Path) -> dict[str, Any]:
@@ -147,7 +155,7 @@ def generate_predictions(args: argparse.Namespace, rows: list[dict[str, Any]]) -
     outputs: dict[str, str] = {}
     first_device = next(model.parameters()).device
     for row in rows:
-        inputs = build_inputs(tokenizer, row["prompt"])
+        inputs = build_inputs(tokenizer, prompt_for_row(row))
         inputs = {key: value.to(first_device) for key, value in inputs.items()}
         generation_kwargs: dict[str, Any] = {
             "max_new_tokens": args.max_new_tokens,
@@ -184,7 +192,7 @@ def score_case(row: dict[str, Any], raw_prediction: Any) -> dict[str, Any]:
     result["expected_mode_match"] = parsed.get("mode") == expected_mode
 
     expected_tools = normalized_tools(row.get("must_tools"))
-    predicted_tools = normalized_tools(parsed.get("tools"))
+    predicted_tools = normalized_tools(parsed.get("needed_tools", parsed.get("tools")))
     result["must_tools_contained"] = expected_tools.issubset(predicted_tools)
 
     min_risk = str(row.get("min_risk", "low")).lower()

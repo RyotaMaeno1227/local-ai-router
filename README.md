@@ -114,29 +114,37 @@ python scripts/eval_router.py \
 
 ## Data Format
 
-SFT データは `messages` 形式の JSONL です。assistant の内容は JSON 文字列のみで、chain-of-thought は含めません。
+SFT データは `messages` 形式の JSONL です。assistant の内容は `schemas/router_output.schema.json` に従う JSON 文字列のみで、chain-of-thought は含めません。
 
 ```json
-{"id":"...","messages":[{"role":"system","content":"..."},{"role":"user","content":"..."},{"role":"assistant","content":"{\"mode\":\"verify\",\"tools\":[\"python\"],\"risk\":\"medium\",\"needs_human_approval\":false,\"next_action\":\"...\"}"}]}
+{"id":"...","messages":[{"role":"system","content":"..."},{"role":"user","content":"..."},{"role":"assistant","content":"{\"task_type\":\"matrix_property_check\",\"domain\":\"FEM basic\",\"risk\":\"medium\",\"mode\":\"code_exec\",\"needed_tools\":[\"python\"],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"symmetry check\"],\"reason\":\"deterministic check required\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single local route is sufficient.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"json_only\",\"include_uncertainty\":true,\"include_sources\":false}}"}]}
 ```
 
-評価データは期待値を持つ JSONL です。
+評価データは期待値を持つ JSONL です。M4では `evals/router_eval_001.jsonl` を50件へ拡張し、カテゴリ内訳は FEM基礎、非線形FEM、接触解析、コード確認、論文・新規性確認を各10件にしています。
 
 ```json
-{"id":"...","prompt":"...","expected_mode":"verify","must_tools":["python"],"min_risk":"medium"}
+{"id":"...","category":"FEM基礎","user":"...","expected_mode":"code_exec","min_risk":"medium","must_tools":["python"],"must_verification":["symmetry check"],"should_use_fusion":false,"notes":"synthetic"}
+```
+
+eval JSONL の検証:
+
+```bash
+python scripts/validate_eval_jsonl.py evals/router_eval_001.jsonl
 ```
 
 router 出力の基本フィールド:
 
 ```json
 {
-  "mode": "route | verify | ask_clarification",
-  "tools": ["python"],
+  "task_type": "matrix_property_check",
+  "domain": "FEM basic",
   "risk": "low | medium | high | critical",
-  "needs_human_approval": false,
-  "next_action": "short action",
-  "checks": ["short check"],
-  "notes": "short note"
+  "mode": "local_answer | local_rag | code_exec | external_expert | managed_fusion | self_fusion_lite | web_or_rag_required | request_more_info",
+  "needed_tools": ["python"],
+  "needed_models": ["openai/gpt-oss-20b"],
+  "verification": {"required": true, "checks": ["short check"], "reason": "short reason"},
+  "fusion_policy": {"enabled": false, "type": null, "reason": "short reason", "panel_size": null, "judge_required": false},
+  "final_answer_policy": {"format": "json_only", "include_uncertainty": true, "include_sources": false}
 }
 ```
 
@@ -225,7 +233,7 @@ Validate SFT `messages` JSONL by checking each assistant `content` JSON string:
 python scripts/validate_router_json.py --mode sft-jsonl path/to/router_sft.jsonl
 ```
 
-Existing `data/router_sft_001.jsonl` and `evals/router_eval_001.jsonl` are preserved as initial M1/M2 samples and are not rewritten by M3.
+M4 updates `data/router_sft_001.jsonl` to the fixed router schema and expands `evals/router_eval_001.jsonl` to 50 synthetic eval rows.
 
 ## Environment Success Memo
 
