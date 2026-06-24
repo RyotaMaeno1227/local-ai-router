@@ -440,6 +440,38 @@ step for any model download, model load, baseline eval, or LoRA dry-run.
 `openai/gpt-oss-20b` remains the inference-only router/verifier baseline on
 RTX5080.
 
+## M9 Qwen3.5 4B Router Eval
+
+M9 evaluated `Qwen/Qwen3.5-4B` as a base router model using the multimodal
+Transformers path: `AutoProcessor` + `AutoModelForMultimodalLM`.
+The run used the prompt-router v2 system prompt, five few-shot examples, and one
+schema repair attempt. Fine-tuning, LoRA dry-run, and adapter training were not
+run.
+
+Saved result files:
+
+- `eval_results/qwen35_4b_eval_smoke_001.json`
+- `eval_results/qwen35_4b_eval_001.json`
+- `eval_results/qwen35_4b_predictions_001.jsonl`
+- `docs/qwen35_4b_router_eval_report.md`
+
+M9 comparison against `openai/gpt-oss-20b` prompt-router v2:
+
+```text
+schema_valid_count: 50 -> 50
+expected_mode_match_count: 44 -> 45
+must_tools_contained_count: 42 -> 37
+must_verification_contained_count: 7 -> 7
+risk_underestimated_count: 16 -> 3
+request_more_info_count: 9 -> 8
+repair_attempted_count: 1 -> 0
+repair_success_count: 1 -> 0
+```
+
+Qwen3.5 4B is viable as a base router candidate, with lower risk
+underestimation but weaker `needed_tools` containment than GPT-OSS
+prompt-router v2. Any LoRA/QLoRA work still requires separate approval.
+
 ## Environment Success Memo
 
 Current local environment status:

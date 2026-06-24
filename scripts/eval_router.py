@@ -70,6 +70,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--device-map", default="auto")
+    parser.add_argument("--model-family", choices=("auto", "causal-lm", "multimodal-lm"), default="auto")
+    parser.add_argument("--model-class", choices=("auto", "causal-lm", "multimodal-lm"), default="auto")
+    parser.add_argument("--processor-name", default=None, help="Optional processor path/name for multimodal models.")
+    parser.add_argument("--attn-implementation", default=None, help="Optional Transformers attention implementation.")
+    parser.add_argument(
+        "--torch-dtype",
+        choices=("auto", "bfloat16", "float16", "float32"),
+        default="auto",
+        help="Model torch dtype. Keep auto unless a model-specific run requires otherwise.",
+    )
     parser.add_argument("--load-in-4bit", action="store_true", help="Optional 4-bit loading; off by default.")
     parser.add_argument("--local-files-only", action="store_true")
     parser.add_argument("--trust-remote-code", action="store_true")
@@ -149,6 +159,13 @@ def extract_final_message(text: str) -> tuple[str, bool]:
         if match:
             return match.group(1).strip(), True
     return text.strip(), False
+
+
+def strip_internal_reasoning(text: str) -> str:
+    stripped = re.sub(r"(?is)<think>.*?</think>", "", text).strip()
+    if "</think>" in stripped:
+        stripped = stripped.rsplit("</think>", maxsplit=1)[-1].strip()
+    return stripped
 
 
 def extract_json(text: Any) -> dict[str, Any] | None:
@@ -235,6 +252,26 @@ def quantization_config(load_in_4bit: bool) -> Any | None:
     )
 
 
+def torch_dtype_value(name: str) -> Any:
+    if name == "auto":
+        return "auto"
+    import torch
+
+    return {
+        "bfloat16": torch.bfloat16,
+        "float16": torch.float16,
+        "float32": torch.float32,
+    }[name]
+
+
+def resolved_model_family(args: argparse.Namespace) -> str:
+    if args.model_class != "auto":
+        return str(args.model_class)
+    if args.model_family != "auto":
+        return str(args.model_family)
+    return "causal-lm"
+
+
 def patch_hub_kernel_trust(args: argparse.Namespace) -> None:
     if not args.trust_remote_code:
         return
@@ -304,6 +341,72 @@ def build_inputs(tokenizer: Any, messages: list[dict[str, str]]) -> dict[str, An
         )
     text = "\n".join(f"{message['role'].title()}: {message['content']}" for message in messages)
     return tokenizer(f"{text}\nAssistant:", return_tensors="pt")
+
+
+def build_multimodal_inputs(processor: Any, messages: list[dict[str, str]]) -> dict[str, Any]:
+    if hasattr(processor, "apply_chat_template"):
+        try:
+            return processor.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                enable_thinking=False,
+                tokenize=True,
+                return_tensors="pt",
+                return_dict=True,
+            )
+        except TypeError:
+            try:
+                rendered = processor.apply_chat_template(
+                    messages,
+                    add_generation_prompt=True,
+                    enable_thinking=False,
+                    tokenize=False,
+                )
+            except TypeError:
+                rendered = processor.apply_chat_template(
+                    messages,
+                    add_generation_prompt=True,
+                    tokenize=False,
+                )
+            try:
+                return processor(text=[rendered], return_tensors="pt")
+            except TypeError:
+                return processor(rendered, return_tensors="pt")
+
+    tokenizer = getattr(processor, "tokenizer", None)
+    if tokenizer is not None and getattr(tokenizer, "chat_template", None):
+        try:
+            return tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                enable_thinking=False,
+                return_tensors="pt",
+                return_dict=True,
+            )
+        except TypeError:
+            return tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                return_tensors="pt",
+                return_dict=True,
+            )
+
+    text = "\n".join(f"{message['role'].title()}: {message['content']}" for message in messages)
+    try:
+        return processor(text=[f"{text}\nAssistant:"], return_tensors="pt")
+    except TypeError:
+        return processor(f"{text}\nAssistant:", return_tensors="pt")
+
+
+def text_decoder(processor_or_tokenizer: Any) -> Any:
+    return getattr(processor_or_tokenizer, "tokenizer", processor_or_tokenizer)
+
+
+def token_id(decoder: Any, name: str) -> int | None:
+    value = getattr(decoder, name, None)
+    if isinstance(value, int):
+        return value
+    return None
 
 
 def router_messages(system_prompt: str, fewshot_messages: list[dict[str, str]], user_prompt: str) -> list[dict[str, str]]:
@@ -377,6 +480,47 @@ def generate_once(
     return final_text, final_channel_found, len(raw_output)
 
 
+def generate_once_multimodal(
+    args: argparse.Namespace,
+    processor: Any,
+    model: Any,
+    input_device: Any,
+    messages: list[dict[str, str]],
+) -> tuple[str, bool, int]:
+    import torch
+
+    inputs = build_multimodal_inputs(processor, messages)
+    inputs = {key: value.to(input_device) if hasattr(value, "to") else value for key, value in inputs.items()}
+    decoder = text_decoder(processor)
+    generation_kwargs: dict[str, Any] = {
+        "max_new_tokens": args.max_new_tokens,
+    }
+    pad_token_id = token_id(decoder, "pad_token_id")
+    eos_token_id = token_id(decoder, "eos_token_id")
+    if pad_token_id is not None:
+        generation_kwargs["pad_token_id"] = pad_token_id
+    if eos_token_id is not None:
+        generation_kwargs["eos_token_id"] = eos_token_id
+    if args.temperature > 0:
+        generation_kwargs["do_sample"] = True
+        generation_kwargs["temperature"] = args.temperature
+    else:
+        generation_kwargs["do_sample"] = False
+
+    with torch.inference_mode():
+        output_ids = model.generate(**inputs, **generation_kwargs)
+
+    input_ids = inputs.get("input_ids")
+    input_length = input_ids.shape[-1] if input_ids is not None else 0
+    new_tokens = output_ids[0][input_length:]
+    raw_output = strip_internal_reasoning(decoder.decode(new_tokens, skip_special_tokens=True).strip())
+    final_text, final_channel_found = extract_final_message(raw_output)
+    del inputs, output_ids, new_tokens
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    return final_text, final_channel_found, len(raw_output)
+
+
 def schema_errors_for(case_id: str, parsed: dict[str, Any] | None, schema: dict[str, Any]) -> list[str]:
     if parsed is None:
         return [f"{case_id}: output is not valid JSON object"]
@@ -390,30 +534,49 @@ def generate_predictions(
     system_prompt: str,
     fewshot_messages: list[dict[str, str]],
 ) -> dict[str, dict[str, Any]]:
-    import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     patch_hub_kernel_trust(args)
 
-    tokenizer = AutoTokenizer.from_pretrained(
-        args.model_name,
-        local_files_only=args.local_files_only,
-        trust_remote_code=args.trust_remote_code,
-    )
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-
     model_kwargs: dict[str, Any] = {
-        "torch_dtype": "auto",
+        "torch_dtype": torch_dtype_value(args.torch_dtype),
         "device_map": args.device_map,
         "local_files_only": args.local_files_only,
         "trust_remote_code": args.trust_remote_code,
     }
+    if args.attn_implementation:
+        model_kwargs["attn_implementation"] = args.attn_implementation
     q_config = quantization_config(args.load_in_4bit)
     if q_config is not None:
         model_kwargs["quantization_config"] = q_config
 
-    model = AutoModelForCausalLM.from_pretrained(args.model_name, **model_kwargs)
+    model_family = resolved_model_family(args)
+    if model_family == "multimodal-lm":
+        try:
+            from transformers import AutoModelForMultimodalLM, AutoProcessor
+        except ImportError as exc:
+            raise RuntimeError(
+                "AutoModelForMultimodalLM is not available in the current Transformers install. "
+                "Stop here; do not install another library without approval."
+            ) from exc
+        processor = AutoProcessor.from_pretrained(
+            args.processor_name or args.model_name,
+            local_files_only=args.local_files_only,
+            trust_remote_code=args.trust_remote_code,
+        )
+        model = AutoModelForMultimodalLM.from_pretrained(args.model_name, **model_kwargs)
+        tokenizer = None
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(
+            args.model_name,
+            local_files_only=args.local_files_only,
+            trust_remote_code=args.trust_remote_code,
+        )
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        processor = None
+        model = AutoModelForCausalLM.from_pretrained(args.model_name, **model_kwargs)
+
     if args.adapter_path:
         from peft import PeftModel
 
@@ -426,13 +589,23 @@ def generate_predictions(
         case_id = row["id"]
         print(f"[{idx}/{len(rows)}] {case_id}", file=sys.stderr, flush=True)
         user_prompt = expected_prompt(row)
-        final_text, final_channel_found, raw_output_chars = generate_once(
-            args,
-            tokenizer,
-            model,
-            input_device,
-            router_messages(system_prompt, fewshot_messages, user_prompt),
-        )
+        messages = router_messages(system_prompt, fewshot_messages, user_prompt)
+        if model_family == "multimodal-lm":
+            final_text, final_channel_found, raw_output_chars = generate_once_multimodal(
+                args,
+                processor,
+                model,
+                input_device,
+                messages,
+            )
+        else:
+            final_text, final_channel_found, raw_output_chars = generate_once(
+                args,
+                tokenizer,
+                model,
+                input_device,
+                messages,
+            )
         prediction = extract_json(final_text)
         schema_errors = schema_errors_for(case_id, prediction, schema)
         repair_attempted = False
@@ -441,13 +614,23 @@ def generate_predictions(
         if schema_errors and args.repair_json_once:
             repair_attempted = True
             print(f"[{idx}/{len(rows)}] {case_id} repair_json_once", file=sys.stderr, flush=True)
-            repaired_text, repaired_final_channel_found, repaired_chars = generate_once(
-                args,
-                tokenizer,
-                model,
-                input_device,
-                repair_messages(system_prompt, user_prompt, final_text, schema_errors),
-            )
+            repair_prompt = repair_messages(system_prompt, user_prompt, final_text, schema_errors)
+            if model_family == "multimodal-lm":
+                repaired_text, repaired_final_channel_found, repaired_chars = generate_once_multimodal(
+                    args,
+                    processor,
+                    model,
+                    input_device,
+                    repair_prompt,
+                )
+            else:
+                repaired_text, repaired_final_channel_found, repaired_chars = generate_once(
+                    args,
+                    tokenizer,
+                    model,
+                    input_device,
+                    repair_prompt,
+                )
             repaired_prediction = extract_json(repaired_text)
             repaired_errors = schema_errors_for(case_id, repaired_prediction, schema)
             repair_success = not repaired_errors
@@ -579,6 +762,11 @@ def write_markdown_log(path: Path, args: argparse.Namespace, report: dict[str, A
         f"Local files only: `{args.local_files_only}`",
         f"Max new tokens: `{args.max_new_tokens}`",
         f"Temperature: `{args.temperature}`",
+        f"Model family: `{resolved_model_family(args)}`",
+        f"Model class: `{args.model_class}`",
+        f"Processor name: `{args.processor_name}`",
+        f"Attention implementation: `{args.attn_implementation}`",
+        f"Torch dtype: `{args.torch_dtype}`",
         f"Prompt version: `{args.prompt_version}`",
         f"System prompt file: `{args.system_prompt_file}`",
         f"Few-shot file: `{args.fewshot_file}`",

@@ -1,0 +1,196 @@
+{
+  "meta": {
+    "eval_file": "evals/router_eval_001.jsonl",
+    "fewshot_file": "prompts/router_fewshot_v2.jsonl",
+    "fewshot_message_count": 10,
+    "generated_at": "2026-06-24T19:36:04Z",
+    "load_in_4bit": false,
+    "local_files_only": true,
+    "max_cases": 3,
+    "max_new_tokens": 256,
+    "model_name": "Qwen/Qwen3.5-4B",
+    "prompt_version": "qwen35-4b-prompt-router-v2",
+    "repair_json_once": true,
+    "results_path": "eval_results/qwen35_4b_eval_smoke_001.json",
+    "schema": "schemas/router_output.schema.json",
+    "system_prompt_file": "prompts/router_system_v2.md",
+    "temperature": 0.0
+  },
+  "metrics": {
+    "expected_mode_match_count": 3,
+    "final_channel_found_count": 0,
+    "fusion_policy_match_count": 3,
+    "json_valid_count": 3,
+    "must_tools_contained_count": 3,
+    "must_verification_contained_count": 2,
+    "repair_attempted_count": 0,
+    "repair_success_count": 0,
+    "request_more_info_count": 1,
+    "risk_underestimated_count": 0,
+    "schema_valid_count": 3,
+    "total": 3
+  },
+  "results": [
+    {
+      "category": "FEM基礎",
+      "expected_mode": "code_exec",
+      "expected_mode_match": true,
+      "final_channel_found": false,
+      "final_text": "{\"task_type\":\"matrix_property_check\",\"domain\":\"FEM theory\",\"risk\":\"medium\",\"mode\":\"code_exec\",\"needed_tools\":[\"python\",\"linear_algebra_check\"],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"symmetry check\",\"smallest eigenvalue check\"],\"reason\":\"Deterministic matrix checks needed.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Single local computation.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"json_only\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_001",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": true,
+      "predicted_mode": "code_exec",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "FEM theory",
+        "final_answer_policy": {
+          "format": "json_only",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Single local computation.",
+          "type": null
+        },
+        "mode": "code_exec",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [
+          "python",
+          "linear_algebra_check"
+        ],
+        "risk": "medium",
+        "task_type": "matrix_property_check",
+        "verification": {
+          "checks": [
+            "symmetry check",
+            "smallest eigenvalue check"
+          ],
+          "reason": "Deterministic matrix checks needed.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 538,
+      "repair_attempted": false,
+      "repair_success": false,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "local_answer",
+      "expected_mode_match": true,
+      "final_channel_found": false,
+      "final_text": "{\"task_type\":\"weak_form_explanation\",\"domain\":\"FEM theory\",\"risk\":\"low\",\"mode\":\"local_answer\",\"needed_tools\":[],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"symbol definition\",\"missing boundary term check\"],\"reason\":\"Conceptual local explanation.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"No fusion needed.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"json_only\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_002",
+      "json_valid": true,
+      "min_risk": "low",
+      "must_tools_contained": true,
+      "must_verification_contained": false,
+      "predicted_mode": "local_answer",
+      "predicted_risk": "low",
+      "prediction": {
+        "domain": "FEM theory",
+        "final_answer_policy": {
+          "format": "json_only",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "No fusion needed.",
+          "type": null
+        },
+        "mode": "local_answer",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [],
+        "risk": "low",
+        "task_type": "weak_form_explanation",
+        "verification": {
+          "checks": [
+            "symbol definition",
+            "missing boundary term check"
+          ],
+          "reason": "Conceptual local explanation.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 498,
+      "repair_attempted": false,
+      "repair_success": false,
+      "request_more_info": false,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    },
+    {
+      "category": "FEM基礎",
+      "expected_mode": "request_more_info",
+      "expected_mode_match": true,
+      "final_channel_found": false,
+      "final_text": "{\"task_type\":\"missing_boundary_conditions\",\"domain\":\"FEM simulation\",\"risk\":\"medium\",\"mode\":\"request_more_info\",\"needed_tools\":[\"human_review\"],\"needed_models\":[\"openai/gpt-oss-20b\"],\"verification\":{\"required\":true,\"checks\":[\"missing boundary conditions\",\"request missing file\"],\"reason\":\"Required input is absent.\"},\"fusion_policy\":{\"enabled\":false,\"type\":null,\"reason\":\"Clarification required.\",\"panel_size\":null,\"judge_required\":false},\"final_answer_policy\":{\"format\":\"json_only\",\"include_uncertainty\":true,\"include_sources\":false}}",
+      "fusion_policy_match": true,
+      "id": "router_eval_001_003",
+      "json_valid": true,
+      "min_risk": "medium",
+      "must_tools_contained": true,
+      "must_verification_contained": true,
+      "predicted_mode": "request_more_info",
+      "predicted_risk": "medium",
+      "prediction": {
+        "domain": "FEM simulation",
+        "final_answer_policy": {
+          "format": "json_only",
+          "include_sources": false,
+          "include_uncertainty": true
+        },
+        "fusion_policy": {
+          "enabled": false,
+          "judge_required": false,
+          "panel_size": null,
+          "reason": "Clarification required.",
+          "type": null
+        },
+        "mode": "request_more_info",
+        "needed_models": [
+          "openai/gpt-oss-20b"
+        ],
+        "needed_tools": [
+          "human_review"
+        ],
+        "risk": "medium",
+        "task_type": "missing_boundary_conditions",
+        "verification": {
+          "checks": [
+            "missing boundary conditions",
+            "request missing file"
+          ],
+          "reason": "Required input is absent.",
+          "required": true
+        }
+      },
+      "raw_output_chars": 535,
+      "repair_attempted": false,
+      "repair_success": false,
+      "request_more_info": true,
+      "risk_underestimated": false,
+      "schema_errors": [],
+      "schema_valid": true
+    }
+  ]
+}
