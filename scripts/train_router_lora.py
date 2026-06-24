@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +35,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lora-dropout", type=float, default=0.05)
     parser.add_argument("--target-modules", nargs="+", default=["q_proj", "v_proj"])
     parser.add_argument("--trainer", choices=("trl", "transformers"), default="trl")
-    parser.add_argument("--no-4bit", action="store_true", help="Disable bitsandbytes 4-bit QLoRA loading.")
+    parser.add_argument("--load-strategy", choices=("mxfp4-auto", "bnb4", "bf16"), default="mxfp4-auto")
+    parser.add_argument("--bf16", action="store_true", help="Enable bf16 training args. Default is disabled.")
+    parser.add_argument("--no-4bit", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--local-files-only", action="store_true", help="Do not download missing model files.")
     parser.add_argument("--trust-remote-code", action="store_true")
     parser.add_argument("--run-train", action="store_true", help="Actually load the model and train.")
@@ -89,8 +92,8 @@ def preview_dataset(path: Path, max_samples: int | None = None) -> None:
     print(fallback_format(first)[:1600])
 
 
-def quantization_config(load_in_4bit: bool) -> Any | None:
-    if not load_in_4bit:
+def quantization_config(load_strategy: str) -> Any | None:
+    if load_strategy != "bnb4":
         return None
     from transformers import BitsAndBytesConfig
 
@@ -118,8 +121,65 @@ def load_training_dataset(dataset_path: Path, tokenizer: Any, max_samples: int |
     return dataset.map(to_text, remove_columns=remove_columns)
 
 
+def optimizer_name(args: argparse.Namespace) -> str:
+    return "paged_adamw_8bit" if args.load_strategy == "bnb4" else "adamw_torch"
+
+
+def ensure_target_modules_exist(model: Any, target_modules: list[str]) -> None:
+    counts = {target: 0 for target in target_modules}
+    for name, _module in model.named_modules():
+        leaf_name = name.rsplit(".", maxsplit=1)[-1]
+        for target in target_modules:
+            if leaf_name == target or name.endswith(target):
+                counts[target] += 1
+
+    missing = [target for target, count in counts.items() if count == 0]
+    print("Target module matches:")
+    for target, count in counts.items():
+        print(f"  {target}: {count}")
+    if missing:
+        raise ValueError(f"target_modules not found: {', '.join(missing)}")
+
+
+def print_trainable_parameters(model: Any) -> None:
+    trainable = 0
+    total = 0
+    for parameter in model.parameters():
+        count = parameter.numel()
+        total += count
+        if parameter.requires_grad:
+            trainable += count
+    ratio = 100 * trainable / total if total else 0.0
+    print(f"LoRA trainable parameters: {trainable:,} / {total:,} ({ratio:.6f}%)")
+    if trainable == 0:
+        raise RuntimeError("No trainable parameters found after LoRA insertion.")
+
+
+def add_nan_guard_callback(trainer: Any) -> None:
+    from transformers import TrainerCallback
+
+    class NanGuardCallback(TrainerCallback):
+        def on_log(self, args: Any, state: Any, control: Any, logs: dict[str, Any] | None = None, **kwargs: Any) -> None:
+            if not logs or "loss" not in logs:
+                return
+            loss = float(logs["loss"])
+            if not math.isfinite(loss):
+                raise FloatingPointError(f"Non-finite loss detected: {loss}")
+
+    trainer.add_callback(NanGuardCallback())
+
+
+def ensure_training_strategy_allowed(args: argparse.Namespace) -> None:
+    if args.run_train and args.load_strategy == "mxfp4-auto":
+        raise SystemExit(
+            "MXFP4 quantized gpt-oss training is not supported by standard Transformers/PEFT path.\n"
+            "Use this model as inference-only on RTX5080.\n"
+            "BF16 training requires much larger VRAM.\n"
+            "bnb4/Unsloth/cloud routes require separate approval."
+        )
+
+
 def build_model_and_tokenizer(args: argparse.Namespace) -> tuple[Any, Any]:
-    from peft import prepare_model_for_kbit_training
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -136,14 +196,23 @@ def build_model_and_tokenizer(args: argparse.Namespace) -> tuple[Any, Any]:
         "local_files_only": args.local_files_only,
         "trust_remote_code": args.trust_remote_code,
     }
-    q_config = quantization_config(load_in_4bit=not args.no_4bit)
+    if args.no_4bit and args.load_strategy == "bnb4":
+        raise ValueError("--no-4bit is incompatible with --load-strategy bnb4")
+
+    q_config = quantization_config(args.load_strategy)
     if q_config is not None:
         model_kwargs["quantization_config"] = q_config
+    elif args.load_strategy == "mxfp4-auto":
+        model_kwargs["torch_dtype"] = "auto"
     else:
-        model_kwargs["torch_dtype"] = torch.bfloat16 if torch.cuda.is_available() else torch.float32
+        model_kwargs["torch_dtype"] = torch.bfloat16
 
+    print(f"Loading model with strategy: {args.load_strategy}")
+    print(f"Model kwargs: torch_dtype={model_kwargs.get('torch_dtype')}, device_map={model_kwargs.get('device_map')}")
     model = AutoModelForCausalLM.from_pretrained(args.model_name, **model_kwargs)
     if q_config is not None:
+        from peft import prepare_model_for_kbit_training
+
         model = prepare_model_for_kbit_training(model)
     return model, tokenizer
 
@@ -157,19 +226,21 @@ def train_with_trl(args: argparse.Namespace, model: Any, tokenizer: Any, train_d
         training_args = SFTConfig(
             output_dir=args.output_dir,
             dataset_text_field="text",
-            max_seq_length=args.max_length,
+            max_length=args.max_length,
             packing=False,
             per_device_train_batch_size=args.per_device_train_batch_size,
             gradient_accumulation_steps=args.gradient_accumulation_steps,
             learning_rate=args.learning_rate,
             num_train_epochs=args.num_train_epochs,
             logging_steps=1,
+            logging_first_step=True,
             save_strategy="epoch",
-            bf16=torch.cuda.is_available(),
+            bf16=args.bf16,
             fp16=False,
             report_to="none",
             gradient_checkpointing=True,
-            optim="paged_adamw_8bit" if not args.no_4bit else "adamw_torch",
+            optim=optimizer_name(args),
+            do_train=True,
         )
         return SFTTrainer(
             model=model,
@@ -188,12 +259,13 @@ def train_with_trl(args: argparse.Namespace, model: Any, tokenizer: Any, train_d
             learning_rate=args.learning_rate,
             num_train_epochs=args.num_train_epochs,
             logging_steps=1,
+            logging_first_step=True,
             save_strategy="epoch",
-            bf16=torch.cuda.is_available(),
+            bf16=args.bf16,
             fp16=False,
             report_to="none",
             gradient_checkpointing=True,
-            optim="paged_adamw_8bit" if not args.no_4bit else "adamw_torch",
+            optim=optimizer_name(args),
         )
         return SFTTrainer(
             model=model,
@@ -228,12 +300,13 @@ def train_with_transformers(args: argparse.Namespace, model: Any, tokenizer: Any
         learning_rate=args.learning_rate,
         num_train_epochs=args.num_train_epochs,
         logging_steps=1,
+        logging_first_step=True,
         save_strategy="epoch",
-        bf16=torch.cuda.is_available(),
+        bf16=args.bf16,
         fp16=False,
         report_to="none",
         gradient_checkpointing=True,
-        optim="paged_adamw_8bit" if not args.no_4bit else "adamw_torch",
+        optim=optimizer_name(args),
     )
     collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
     return Trainer(
@@ -247,6 +320,7 @@ def train_with_transformers(args: argparse.Namespace, model: Any, tokenizer: Any
 def main() -> None:
     args = parse_args()
     dataset_path = Path(args.dataset)
+    ensure_training_strategy_allowed(args)
 
     if not args.run_train:
         preview_dataset(dataset_path, max_samples=args.max_samples)
@@ -257,7 +331,9 @@ def main() -> None:
     from peft import LoraConfig, TaskType
 
     model, tokenizer = build_model_and_tokenizer(args)
+    ensure_target_modules_exist(model, args.target_modules)
     train_dataset = load_training_dataset(dataset_path, tokenizer, max_samples=args.max_samples)
+    print(f"Training examples loaded: {len(train_dataset)}")
     lora_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
         r=args.lora_r,
@@ -269,12 +345,15 @@ def main() -> None:
 
     if args.trainer == "trl":
         trainer = train_with_trl(args, model, tokenizer, train_dataset, lora_config)
+        print_trainable_parameters(trainer.model)
     else:
         from peft import get_peft_model
 
         model = get_peft_model(model, lora_config)
+        print_trainable_parameters(model)
         trainer = train_with_transformers(args, model, tokenizer, train_dataset)
 
+    add_nan_guard_callback(trainer)
     trainer.train()
     trainer.save_model(args.output_dir)
     tokenizer.save_pretrained(args.output_dir)

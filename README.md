@@ -361,6 +361,24 @@ Environment snapshots for the `gptoss20b` conda environment are stored in:
 
 `scripts/train_router_lora.py` supports `--max-samples` for future human-approved small training runs, but training still requires explicit `--run-train`. Do not run `--run-train` until a human approves the next milestone.
 
+## M7 LoRA Dry-Run Finding
+
+M7 attempted a 2-sample LoRA dry-run with `openai/gpt-oss-20b` on RTX5080 through the standard Transformers/TRL/PEFT path.
+
+Result summary:
+
+- `openai/gpt-oss-20b` MXFP4 inference and model loading worked locally.
+- The dataset preview path worked without model loading or training.
+- `q_proj` target modules were detected during the attempted dry-run.
+- Standard Transformers/PEFT LoRA training on MXFP4 stopped before training because MXFP4 training is not supported by that path.
+- No OOM occurred before the stop.
+- No adapter was saved.
+- The 10-sample dry-run was not executed.
+
+The current operating decision is to treat `openai/gpt-oss-20b` as an inference-only router/verifier on RTX5080. `scripts/train_router_lora.py` now blocks `--run-train --load-strategy mxfp4-auto` before model loading to prevent repeating this unsupported route.
+
+Detailed findings are in `docs/m7_lora_dryrun_findings.md`. Adapter directories under `adapters/` and operational logs under `logs/*.md` are not managed by git.
+
 ## Environment Success Memo
 
 Current local environment status:
