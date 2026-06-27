@@ -512,6 +512,36 @@ M9 failure analysis for future approved training is in
 verification check names, richer `needed_tools`, research novelty routing, and
 conservative nonlinear/contact risk calibration.
 
+## M11a Qwen3.5 4B Router LoRA v001-small
+
+M11a completed the first approved small LoRA training run for
+`Qwen/Qwen3.5-4B`. It used `data/router_sft_train_050.jsonl`, a fixed 50-row
+subset emphasizing verification, tool selection, request-more-info boundaries,
+and mode/risk coverage. The prohibited 150-row full training run was not run.
+
+Training completed for one epoch with `q_proj`/`v_proj`, `r=4`, `alpha=8`,
+maximum length 256, batch size 1, and gradient accumulation 4. The final
+training loss was 2.746; no CUDA OOM or non-finite loss occurred. The adapter
+is stored under `adapters/qwen35-4b-router-lora-v001-small` and is not managed
+by git.
+
+On the existing 50-case eval, LoRA improved `must_tools_contained_count` from
+37 to 39. Mode match (45), verification containment (7), and risk
+underestimation (3) were unchanged. The independent 30-case holdout produced
+30/30 schema-valid outputs, 28 mode matches, 22 tool matches, 0 exact
+verification matches, and 8 risk underestimates. This small adapter is not yet
+evidence for broad generalization.
+
+Results:
+
+- `eval_results/qwen35_lora_v001_small_eval_001.json`
+- `eval_results/qwen35_lora_v001_small_predictions_001.jsonl`
+- `eval_results/qwen35_lora_v001_small_holdout_eval_001.json`
+- `eval_results/qwen35_lora_v001_small_holdout_predictions_001.jsonl`
+- `docs/qwen35_lora_v001_small_eval_report.md`
+
+Operational logs remain under `logs/` and are not managed by git.
+
 ## Environment Success Memo
 
 Current local environment status:
@@ -532,4 +562,5 @@ Current local environment status:
 - `openai/gpt-oss-20b` base inference succeeded
 - Final-only JSON extraction succeeded
 - `logs/*.md` are operational logs and are not managed by git
-- Fine-tuning has not been run yet
+- GPT-OSS fine-tuning has not been run; Qwen3.5 4B LoRA v001-small used only
+  the approved 50-row subset for one epoch
