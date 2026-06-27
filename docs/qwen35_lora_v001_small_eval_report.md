@@ -71,12 +71,12 @@ visible in code review (3), nonlinear FEM (2), and contact (2). Risk was
 underestimated in 8 cases, concentrated in contact (3), nonlinear FEM (2),
 and code review (2).
 
-No Qwen base holdout run exists, so the holdout numbers measure the adapter's
-absolute behavior and must not be interpreted as a base-to-LoRA improvement.
-The 0/30 exact verification containment result shows that canonical check-name
-generalization remains the highest-priority gap. A later training proposal
-should improve data diversity and verify the scoring vocabulary before any
-larger run is approved.
+M11b subsequently ran the Qwen base model on this holdout. Base scored 27 mode
+matches, 22 tool matches, 0 exact verification matches, and 8 risk
+underestimates; LoRA scored 28, 22, 0, and 8 respectively. The adapter improved
+one mode boundary but did not demonstrate broader holdout improvement. The
+0/30 exact verification result is primarily a vocabulary-contract mismatch,
+analyzed in `docs/qwen35_holdout_and_verification_analysis.md`.
 
 ## Artifacts
 

@@ -542,6 +542,32 @@ Results:
 
 Operational logs remain under `logs/` and are not managed by git.
 
+## M11b Base Holdout and Verification Vocabulary
+
+M11b evaluated the unadapted `Qwen/Qwen3.5-4B` on the 30-case holdout under
+the same prompt and generation settings as LoRA v001-small. No training or
+adapter update was run.
+
+Base scored 27 mode matches, 22 tool matches, 0 strict verification matches,
+and 8 risk underestimates. LoRA scored 28, 22, 0, and 8 respectively. The LoRA
+improvement is limited to one mode boundary; broader holdout improvement was
+not demonstrated.
+
+Verification analysis found a vocabulary contract mismatch: predictions use
+natural-language labels while holdout expectations use canonical snake_case
+identifiers. The existing few-shot prompt also teaches natural-language
+labels. Canonical values and migration aliases are documented in
+`docs/router_canonical_vocabulary.md`; detailed comparison is in
+`docs/qwen35_holdout_and_verification_analysis.md`.
+
+M11b artifacts:
+
+- `eval_results/qwen35_4b_holdout_eval_001.json`
+- `eval_results/qwen35_4b_holdout_predictions_001.jsonl`
+- `scripts/analyze_verification_labels.py`
+- `docs/router_canonical_vocabulary.md`
+- `docs/qwen35_holdout_and_verification_analysis.md`
+
 ## Environment Success Memo
 
 Current local environment status:
