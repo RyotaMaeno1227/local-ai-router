@@ -57,7 +57,7 @@ Preferred canonical identifiers:
 - mesh: `topology_check`, `nonmanifold_edge_check`
 - code: `compile`, `run_tests`, `code_context_check`, `warning_extraction`
 - research: `citation_check`, `terminology_check`, `overclaim_check`, `compare_existing_methods`
-- missing inputs: `missing_file_check`, `comparison_target_check`, `material_source_check`, `expected_failure_check`
+- missing inputs and reproduction: `missing_file_check`, `comparison_target_check`, `material_source_check`, `command_line_check`, `expected_failure_check`
 - safety and provenance: `safety_approval_check`, `backup_check`, `provenance_check`, `destructive_action_review`
 - schema: `schema_required_key_check`, `enum_check`, `nested_object_check`
 - operations: `active_process_check`, `resource_conflict_check`, `approval_check`

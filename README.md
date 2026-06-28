@@ -568,6 +568,42 @@ M11b artifacts:
 - `docs/router_canonical_vocabulary.md`
 - `docs/qwen35_holdout_and_verification_analysis.md`
 
+## M12 Canonical Vocabulary Repair and Prompt-Router v3
+
+M12 introduced prompt-router v3 and canonicalized the verification vocabulary
+contract without additional training. `verification.checks` now uses only
+lowercase snake_case identifiers; explanatory text remains in
+`verification.reason`. The non-destructive normalizer produced:
+
+- `data/router_sft_002_canonical.jsonl` (150 rows)
+- `data/router_sft_train_050_canonical.jsonl` (50 rows)
+
+Both source SFT datasets were already canonical: zero labels changed and zero
+unknown labels were found. The prompt, especially its v2 few-shot examples,
+was the source of the vocabulary mismatch.
+
+On the canonical holdout, base prompt v3 improved verification from 0 to 8,
+tools from 22 to 24, and mode matches from 27 to 28. LoRA v001-small prompt v3
+improved verification from 0 to 8 and tools from 22 to 26. Risk
+underestimation remained 8 for both. The original 50-case eval still uses
+legacy natural-language expectations, so its v3 strict-verification score is
+not comparable to v2.
+
+Qwen3.5 4B remains the local router candidate for RTX5080 16GB. Qwen3.5 9B is
+not in scope. No fine-tuning, LoRA dry-run, adapter update, or 150-row training
+was run in M12.
+
+M12 artifacts:
+
+- `prompts/router_system_v3.md`
+- `prompts/router_fewshot_v3.jsonl`
+- `scripts/normalize_router_vocabulary.py`
+- `docs/router_vocabulary_repair_report.md`
+- `docs/qwen35_prompt_v3_eval_report.md`
+- `eval_results/qwen35_4b_prompt_v3_eval_001.json`
+- `eval_results/qwen35_4b_prompt_v3_holdout_eval_001.json`
+- `eval_results/qwen35_lora_v001_small_prompt_v3_holdout_eval_001.json`
+
 ## Environment Success Memo
 
 Current local environment status:
