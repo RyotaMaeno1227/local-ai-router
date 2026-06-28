@@ -604,6 +604,40 @@ M12 artifacts:
 - `eval_results/qwen35_4b_prompt_v3_holdout_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_holdout_eval_001.json`
 
+## M13 Canonical Eval and Vocabulary Whitelist
+
+M13 migrated the original 50-case eval to
+`evals/router_eval_001_canonical.jsonl` without modifying the legacy source.
+All 86 legacy verification labels were explicitly mapped to 89 canonical
+occurrences with zero unresolved labels. Legacy v2 and canonical v3
+verification scores are not directly interchangeable.
+
+`scripts/validate_router_vocab.py` now checks prediction, SFT, and eval JSONL
+for allowed mode, risk, tool, verification, and fusion vocabulary. Strict mode
+returns nonzero for unknown values. Prediction audits are non-destructive and
+found a small number of field-placement or invented-label errors, documented
+in `docs/qwen35_prompt_v3_canonical_eval_report.md`.
+
+On canonical 50 cases, Qwen3.5 base scored 45 mode, 39 tool, and 17
+verification matches with 3 risk underestimates. LoRA v001-small scored 45,
+39, and 16 with 4 risk underestimates. The adapter did not improve the
+canonical 50-case result, though it retains a two-case tool advantage on the
+canonical holdout.
+
+Qwen3.5 4B with prompt-router v3 remains the supported local candidate on
+RTX5080 16GB. Qwen3.5 9B is not in scope. No additional training, LoRA
+dry-run, adapter update, API access, or 150-row training occurred in M13.
+
+M13 artifacts:
+
+- `evals/router_eval_001_canonical.jsonl`
+- `scripts/canonicalize_router_eval.py`
+- `scripts/validate_router_vocab.py`
+- `docs/router_eval_canonicalization_report.md`
+- `docs/qwen35_prompt_v3_canonical_eval_report.md`
+- `eval_results/qwen35_4b_prompt_v3_canonical_eval_001.json`
+- `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_eval_001.json`
+
 ## Environment Success Memo
 
 Current local environment status:
