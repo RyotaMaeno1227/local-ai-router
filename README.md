@@ -670,6 +670,31 @@ M14 artifacts:
 - `eval_results/qwen35_4b_prompt_v3_holdout_vocab_repair_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_vocab_repair_eval_001.json`
 
+## M15 Risk and Verification Gap Analysis
+
+M14 stabilized schema and canonical vocabulary output. M15 analyzes the
+remaining quality gaps without loading a model or running additional training.
+The analysis covers risk underestimation, exact verification completeness,
+required tools, mode selection, and `request_more_info` boundaries across the
+canonical 50 and holdout 30 results.
+
+The main gaps are conservative risk calibration for nonlinear/contact/code
+tasks and incomplete verification sets. Across both evals,
+`assumption_check` was missing 15 times and `python` was missing 10 times. The
+analysis also identified a substring-scoring edge case, so future canonical
+verification evaluation should use exact label membership.
+
+`docs/router_sft_v002_design.md` proposes a reviewed 90-row canonical candidate
+set emphasizing risk, verification completeness, tools, and clarification
+contrast pairs. This remains a design stage: no v002 JSONL, fine-tuning, LoRA
+dry-run, adapter update, or 150-row training was performed.
+
+M15 artifacts:
+
+- `scripts/analyze_router_quality_gaps.py`
+- `docs/qwen35_risk_verification_gap_analysis.md`
+- `docs/router_sft_v002_design.md`
+
 ## Environment Success Memo
 
 Current local environment status:
