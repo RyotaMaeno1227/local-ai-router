@@ -9,19 +9,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
-CANONICAL_LABELS = {
-    "active_process_check", "active_set_check", "approval_check", "assumption_check",
-    "backup_check", "boundary_condition_check", "citation_check", "code_context_check",
-    "command_line_check", "compare_existing_methods", "comparison_target_check", "compile",
-    "complementarity_check", "convergence_check", "destructive_action_review", "dimension_check",
-    "enum_check", "expected_failure_check", "limiting_case_check", "material_source_check",
-    "matrix_size_check", "missing_file_check", "nested_object_check", "nonmanifold_edge_check",
-    "overclaim_check", "positive_definiteness_check", "provenance_check", "residual_definition_check",
-    "resource_conflict_check", "run_tests", "safety_approval_check", "schema_required_key_check",
-    "sign_convention_check", "symbol_definition", "symmetry_check", "tangent_consistency_check",
-    "terminology_check", "topology_check", "warning_extraction",
-}
+from router_vocab import CANONICAL_LABELS
 
 ALIASES = {
     "active set consistency": "active_set_check",

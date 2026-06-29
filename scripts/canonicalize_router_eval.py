@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from normalize_router_vocabulary import CANONICAL_LABELS
+from router_vocab import CANONICAL_LABELS
 
 
 LEGACY_ALIASES: dict[str, tuple[str, ...]] = {

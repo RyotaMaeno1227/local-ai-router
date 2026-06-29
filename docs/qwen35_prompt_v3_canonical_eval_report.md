@@ -74,3 +74,6 @@ adapter update, API access, or full 150-row training.
 - `eval_results/qwen35_4b_prompt_v3_canonical_predictions_001.jsonl`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_predictions_001.jsonl`
+
+M14 subsequently added inference-time whitelist repair and eliminated all
+observed unknown vocabulary. See `docs/qwen35_vocab_repair_eval_report.md`.

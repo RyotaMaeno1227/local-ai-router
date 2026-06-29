@@ -10,23 +10,13 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from normalize_router_vocabulary import CANONICAL_LABELS
-
-
-ALLOWED_MODES = {
-    "local_answer", "local_rag", "code_exec", "external_expert", "managed_fusion",
-    "self_fusion_lite", "web_or_rag_required", "request_more_info",
-}
-ALLOWED_RISKS = {"low", "medium", "high", "critical"}
-ALLOWED_TOOLS = {
-    "contact_checker", "filesystem_audit", "git_diff", "gpu_monitor", "human_review",
-    "json_schema_validator", "linear_algebra_check", "literature_search_placeholder",
-    "local_docs", "local_rag", "log_parser", "mesh_checker", "pytest", "python",
-    "regression_check", "repro_checklist", "static_analysis", "symbolic_check",
-    "text_compare", "vendor_docs",
-}
-FUSION_FIELDS = {"enabled", "type", "reason", "panel_size", "judge_required"}
-ALLOWED_FUSION_TYPES = {None, "expert_panel", "self_consistency", "self_fusion_lite"}
+from router_vocab import (
+    ALLOWED_MODES,
+    ALLOWED_RISKS,
+    ALLOWED_TOOLS,
+    CANONICAL_LABELS,
+    validate_router_output_vocab,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,51 +48,13 @@ def record_unknown(counter: Counter[str], field: str, value: Any) -> None:
     counter[f"{field}: {value!r}"] += 1
 
 
-def validate_fusion(value: Any, unknown: Counter[str], structural: list[str], context: str) -> None:
-    if not isinstance(value, dict):
-        structural.append(f"{context}: fusion_policy must be an object")
-        return
-    for field in sorted(set(value) - FUSION_FIELDS):
-        record_unknown(unknown, "fusion_policy.field", field)
-    for field in sorted(FUSION_FIELDS - set(value)):
-        structural.append(f"{context}: missing fusion_policy.{field}")
-    if value.get("type") not in ALLOWED_FUSION_TYPES:
-        record_unknown(unknown, "fusion_policy.type", value.get("type"))
-    if "enabled" in value and not isinstance(value["enabled"], bool):
-        structural.append(f"{context}: fusion_policy.enabled must be boolean")
-    if "judge_required" in value and not isinstance(value["judge_required"], bool):
-        structural.append(f"{context}: fusion_policy.judge_required must be boolean")
-    panel_size = value.get("panel_size")
-    if panel_size is not None and (not isinstance(panel_size, int) or isinstance(panel_size, bool)):
-        structural.append(f"{context}: fusion_policy.panel_size must be integer or null")
-    if "reason" in value and not isinstance(value["reason"], str):
-        structural.append(f"{context}: fusion_policy.reason must be string")
-
-
 def validate_router(output: Any, unknown: Counter[str], structural: list[str], context: str) -> None:
-    if not isinstance(output, dict):
-        structural.append(f"{context}: router output must be an object")
-        return
-    if output.get("mode") not in ALLOWED_MODES:
-        record_unknown(unknown, "mode", output.get("mode"))
-    if output.get("risk") not in ALLOWED_RISKS:
-        record_unknown(unknown, "risk", output.get("risk"))
-    tools = output.get("needed_tools")
-    if not isinstance(tools, list):
-        structural.append(f"{context}: needed_tools must be a list")
-    else:
-        for tool in tools:
-            if tool not in ALLOWED_TOOLS:
-                record_unknown(unknown, "needed_tools", tool)
-    verification = output.get("verification")
-    checks = verification.get("checks") if isinstance(verification, dict) else None
-    if not isinstance(checks, list):
-        structural.append(f"{context}: verification.checks must be a list")
-    else:
-        for label in checks:
-            if label not in CANONICAL_LABELS:
-                record_unknown(unknown, "verification.checks", label)
-    validate_fusion(output.get("fusion_policy"), unknown, structural, context)
+    validation = validate_router_output_vocab(output)
+    for error in validation.errors:
+        if error.startswith("unknown "):
+            unknown[error] += 1
+        else:
+            structural.append(f"{context}: {error}")
 
 
 def prediction_output(row: dict[str, Any]) -> Any:

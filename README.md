@@ -638,6 +638,38 @@ M13 artifacts:
 - `eval_results/qwen35_4b_prompt_v3_canonical_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_eval_001.json`
 
+## M14 Inference-Time Vocabulary Repair
+
+M14 adds canonical vocabulary validation to `scripts/eval_router.py` after
+JSON parsing and schema validation. If a schema-valid output contains unknown
+`needed_tools` or `verification.checks`, the model receives one JSON-only
+repair request. The repaired output is then revalidated against both schema
+and vocabulary. `--vocab-strict` exits nonzero after saving results if any
+case remains invalid.
+
+The base canonical 50 run repaired 3/3 invalid cases and finished with 50/50
+vocab-valid outputs. The base holdout repaired 2/2 and finished at 30/30. The
+LoRA comparison repaired 3/3 and finished at 50/50. Unknown tool and
+verification label counts were zero in all final M14 predictions.
+
+Router quality metrics did not change from M13: base canonical remained at 45
+mode, 39 tool, and 17 verification matches with 3 risk underestimates. Base
+holdout remained at 28, 24, and 8 with 8 risk underestimates. Vocabulary retry
+enforces the output contract but does not by itself improve routing quality.
+
+Qwen3.5 4B base with prompt-router v3 remains the standard local router
+candidate. LoRA v001-small remains comparison-only and is not the selected
+adapter. Qwen3.5 9B is out of scope. No additional training, LoRA dry-run,
+adapter update, API access, or 150-row training occurred in M14.
+
+M14 artifacts:
+
+- `scripts/router_vocab.py`
+- `docs/qwen35_vocab_repair_eval_report.md`
+- `eval_results/qwen35_4b_prompt_v3_canonical_vocab_repair_eval_001.json`
+- `eval_results/qwen35_4b_prompt_v3_holdout_vocab_repair_eval_001.json`
+- `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_vocab_repair_eval_001.json`
+
 ## Environment Success Memo
 
 Current local environment status:

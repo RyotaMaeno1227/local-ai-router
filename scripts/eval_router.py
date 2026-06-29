@@ -12,6 +12,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from router_vocab import (
+    ALLOWED_TOOLS,
+    CANONICAL_LABELS,
+    VocabValidation,
+    validate_router_output_vocab,
+    validate_vocab_document,
+)
 from validate_router_json import load_json, validate_router_output
 
 
@@ -39,6 +46,7 @@ REQUIRED_KEYS = (
     "final_answer_policy",
 )
 DEFAULT_SCHEMA = Path("schemas/router_output.schema.json")
+DEFAULT_VOCAB = Path("docs/router_canonical_vocabulary.md")
 SYSTEM_PROMPT = f"""Return only one final JSON object for a scientific router decision.
 No markdown. No prose outside JSON. No chain-of-thought.
 Top-level keys: {", ".join(REQUIRED_KEYS)}
@@ -66,6 +74,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fewshot-file", default=None, help="Optional JSONL few-shot messages file.")
     parser.add_argument("--prompt-version", default="base", help="Prompt version label for reporting.")
     parser.add_argument("--repair-json-once", action="store_true", help="Retry once when output is invalid JSON/schema.")
+    parser.add_argument("--vocab-file", default=str(DEFAULT_VOCAB), help="Canonical vocabulary documentation path.")
+    parser.add_argument("--validate-vocab", action="store_true", help="Validate router output against canonical vocabulary.")
+    parser.add_argument("--repair-vocab-once", action="store_true", help="Retry once when schema is valid but vocabulary is invalid.")
+    parser.add_argument("--vocab-strict", action="store_true", help="Exit nonzero after saving results if vocabulary remains invalid.")
     parser.add_argument("--max-cases", type=int, default=None)
     parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--temperature", type=float, default=0.0)
@@ -234,6 +246,9 @@ def load_predictions(path: Path) -> dict[str, dict[str, Any]]:
             "prediction": row.get("prediction", row.get("parsed_json")),
             "repair_attempted": bool(row.get("repair_attempted", False)),
             "repair_success": bool(row.get("repair_success", False)),
+            "initial_vocab_errors": list(row.get("initial_vocab_errors", [])),
+            "vocab_repair_attempted": bool(row.get("vocab_repair_attempted", False)),
+            "vocab_repair_success": bool(row.get("vocab_repair_success", False)),
         }
     return predictions
 
@@ -437,6 +452,32 @@ def repair_messages(
     ]
 
 
+def vocab_repair_messages(
+    system_prompt: str,
+    original_user_prompt: str,
+    prediction: dict[str, Any],
+    vocab_errors: list[str],
+) -> list[dict[str, str]]:
+    repair_user = (
+        "The previous router JSON is schema-valid but uses vocabulary outside the canonical whitelist.\n"
+        "Repair only vocabulary values and return JSON only. Do not answer the task, add markdown, or expose chain-of-thought.\n"
+        "Keep the JSON structure and all keys unchanged.\n"
+        "Replace each unknown needed_tools value with the closest allowed tool, or remove it if unnecessary.\n"
+        "Replace each unknown verification.checks value with the closest allowed canonical check.\n"
+        "Put any explanation in verification.reason, not verification.checks.\n\n"
+        f"Allowed needed_tools:\n{json.dumps(sorted(ALLOWED_TOOLS), ensure_ascii=False)}\n\n"
+        f"Allowed verification.checks:\n{json.dumps(sorted(CANONICAL_LABELS), ensure_ascii=False)}\n\n"
+        f"Original router request:\n{original_user_prompt}\n\n"
+        f"Vocabulary errors:\n{json.dumps(vocab_errors[:12], ensure_ascii=False)}\n\n"
+        f"Schema-valid JSON to repair:\n{json.dumps(prediction, ensure_ascii=False, separators=(',', ':'))}\n\n"
+        "Return exactly one schema-valid JSON object using only allowed vocabulary."
+    )
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": repair_user},
+    ]
+
+
 def first_runtime_device(model: Any) -> Any:
     import torch
 
@@ -521,10 +562,30 @@ def generate_once_multimodal(
     return final_text, final_channel_found, len(raw_output)
 
 
+def generate_for_family(
+    args: argparse.Namespace,
+    model_family: str,
+    processor: Any,
+    tokenizer: Any,
+    model: Any,
+    input_device: Any,
+    messages: list[dict[str, str]],
+) -> tuple[str, bool, int]:
+    if model_family == "multimodal-lm":
+        return generate_once_multimodal(args, processor, model, input_device, messages)
+    return generate_once(args, tokenizer, model, input_device, messages)
+
+
 def schema_errors_for(case_id: str, parsed: dict[str, Any] | None, schema: dict[str, Any]) -> list[str]:
     if parsed is None:
         return [f"{case_id}: output is not valid JSON object"]
     return validate_router_output(case_id, parsed, schema)
+
+
+def vocab_validation_for(parsed: dict[str, Any] | None, enabled: bool) -> VocabValidation | None:
+    if not enabled:
+        return None
+    return validate_router_output_vocab(parsed)
 
 
 def generate_predictions(
@@ -590,47 +651,25 @@ def generate_predictions(
         print(f"[{idx}/{len(rows)}] {case_id}", file=sys.stderr, flush=True)
         user_prompt = expected_prompt(row)
         messages = router_messages(system_prompt, fewshot_messages, user_prompt)
-        if model_family == "multimodal-lm":
-            final_text, final_channel_found, raw_output_chars = generate_once_multimodal(
-                args,
-                processor,
-                model,
-                input_device,
-                messages,
-            )
-        else:
-            final_text, final_channel_found, raw_output_chars = generate_once(
-                args,
-                tokenizer,
-                model,
-                input_device,
-                messages,
-            )
+        final_text, final_channel_found, raw_output_chars = generate_for_family(
+            args, model_family, processor, tokenizer, model, input_device, messages
+        )
         prediction = extract_json(final_text)
         schema_errors = schema_errors_for(case_id, prediction, schema)
+        vocab_validation = vocab_validation_for(prediction, args.validate_vocab)
+        initial_vocab_errors = list(vocab_validation.errors) if vocab_validation else []
         repair_attempted = False
         repair_success = False
+        vocab_repair_attempted = False
+        vocab_repair_success = False
 
         if schema_errors and args.repair_json_once:
             repair_attempted = True
             print(f"[{idx}/{len(rows)}] {case_id} repair_json_once", file=sys.stderr, flush=True)
             repair_prompt = repair_messages(system_prompt, user_prompt, final_text, schema_errors)
-            if model_family == "multimodal-lm":
-                repaired_text, repaired_final_channel_found, repaired_chars = generate_once_multimodal(
-                    args,
-                    processor,
-                    model,
-                    input_device,
-                    repair_prompt,
-                )
-            else:
-                repaired_text, repaired_final_channel_found, repaired_chars = generate_once(
-                    args,
-                    tokenizer,
-                    model,
-                    input_device,
-                    repair_prompt,
-                )
+            repaired_text, repaired_final_channel_found, repaired_chars = generate_for_family(
+                args, model_family, processor, tokenizer, model, input_device, repair_prompt
+            )
             repaired_prediction = extract_json(repaired_text)
             repaired_errors = schema_errors_for(case_id, repaired_prediction, schema)
             repair_success = not repaired_errors
@@ -639,6 +678,30 @@ def generate_predictions(
             raw_output_chars = repaired_chars
             prediction = repaired_prediction
             schema_errors = repaired_errors
+            vocab_validation = vocab_validation_for(prediction, args.validate_vocab)
+
+        vocab_errors = list(vocab_validation.errors) if vocab_validation else []
+        if not schema_errors and vocab_errors and args.repair_vocab_once:
+            vocab_repair_attempted = True
+            print(f"[{idx}/{len(rows)}] {case_id} repair_vocab_once", file=sys.stderr, flush=True)
+            if not isinstance(prediction, dict):
+                raise RuntimeError(f"{case_id}: schema-valid prediction must be an object")
+            repair_prompt = vocab_repair_messages(system_prompt, user_prompt, prediction, vocab_errors)
+            repaired_text, repaired_final_channel_found, repaired_chars = generate_for_family(
+                args, model_family, processor, tokenizer, model, input_device, repair_prompt
+            )
+            repaired_prediction = extract_json(repaired_text)
+            repaired_schema_errors = schema_errors_for(case_id, repaired_prediction, schema)
+            repaired_vocab = vocab_validation_for(repaired_prediction, args.validate_vocab)
+            repaired_vocab_errors = list(repaired_vocab.errors) if repaired_vocab else []
+            vocab_repair_success = not repaired_schema_errors and not repaired_vocab_errors
+            final_text = repaired_text
+            final_channel_found = repaired_final_channel_found
+            raw_output_chars = repaired_chars
+            prediction = repaired_prediction
+            schema_errors = repaired_schema_errors
+            vocab_validation = repaired_vocab
+            vocab_errors = repaired_vocab_errors
 
         outputs[case_id] = {
             "final_text": final_text,
@@ -647,6 +710,10 @@ def generate_predictions(
             "schema_errors": schema_errors,
             "repair_attempted": repair_attempted,
             "repair_success": repair_success,
+            "vocab_errors": vocab_errors,
+            "initial_vocab_errors": initial_vocab_errors,
+            "vocab_repair_attempted": vocab_repair_attempted,
+            "vocab_repair_success": vocab_repair_success,
             "raw_output_chars": raw_output_chars,
         }
     return outputs
@@ -668,11 +735,17 @@ def contains_expected_terms(expected: list[str], actual_text: str) -> bool:
     return all(term.lower() in actual for term in expected)
 
 
-def score_case(row: dict[str, Any], raw_prediction: dict[str, Any], schema: dict[str, Any]) -> dict[str, Any]:
+def score_case(
+    row: dict[str, Any],
+    raw_prediction: dict[str, Any],
+    schema: dict[str, Any],
+    validate_vocab: bool,
+) -> dict[str, Any]:
     parsed = raw_prediction.get("prediction")
     if parsed is None:
         parsed = extract_json(raw_prediction.get("final_text", ""))
     schema_errors = validate_router_output(row["id"], parsed, schema) if parsed is not None else []
+    vocab_validation = vocab_validation_for(parsed, validate_vocab)
 
     expected_tools = set(normalized_strings(row.get("must_tools")))
     predicted_tools = set(normalized_strings(parsed.get("needed_tools") if isinstance(parsed, dict) else None))
@@ -693,6 +766,13 @@ def score_case(row: dict[str, Any], raw_prediction: dict[str, Any], schema: dict
         "json_valid": parsed is not None,
         "schema_valid": parsed is not None and not schema_errors,
         "schema_errors": schema_errors,
+        "vocab_valid": vocab_validation.valid if vocab_validation else None,
+        "vocab_errors": list(vocab_validation.errors) if vocab_validation else [],
+        "initial_vocab_errors": list(raw_prediction.get("initial_vocab_errors", [])),
+        "unknown_needed_tools": list(vocab_validation.unknown_needed_tools) if vocab_validation else [],
+        "unknown_verification_checks": list(vocab_validation.unknown_verification_checks)
+        if vocab_validation
+        else [],
         "expected_mode_match": predicted_mode == row.get("expected_mode"),
         "must_tools_contained": expected_tools.issubset(predicted_tools),
         "must_verification_contained": contains_expected_terms(expected_verification, verification_text(parsed))
@@ -704,6 +784,8 @@ def score_case(row: dict[str, Any], raw_prediction: dict[str, Any], schema: dict
         "final_channel_found": bool(raw_prediction.get("final_channel_found")),
         "repair_attempted": bool(raw_prediction.get("repair_attempted")),
         "repair_success": bool(raw_prediction.get("repair_success")),
+        "vocab_repair_attempted": bool(raw_prediction.get("vocab_repair_attempted")),
+        "vocab_repair_success": bool(raw_prediction.get("vocab_repair_success")),
         "final_text": raw_prediction.get("final_text"),
         "raw_output_chars": int(raw_prediction.get("raw_output_chars", len(str(raw_prediction.get("raw_output", ""))))),
         "prediction": parsed,
@@ -724,6 +806,14 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
         "final_channel_found_count": sum(1 for item in results if item["final_channel_found"]),
         "repair_attempted_count": sum(1 for item in results if item["repair_attempted"]),
         "repair_success_count": sum(1 for item in results if item["repair_success"]),
+        "vocab_valid_count": sum(1 for item in results if item["vocab_valid"] is True),
+        "vocab_invalid_count": sum(1 for item in results if item["vocab_valid"] is False),
+        "vocab_repair_attempted_count": sum(1 for item in results if item["vocab_repair_attempted"]),
+        "vocab_repair_success_count": sum(1 for item in results if item["vocab_repair_success"]),
+        "unknown_needed_tools_count": sum(len(item["unknown_needed_tools"]) for item in results),
+        "unknown_verification_checks_count": sum(
+            len(item["unknown_verification_checks"]) for item in results
+        ),
     }
 
 
@@ -743,6 +833,13 @@ def write_predictions(path: Path, results: list[dict[str, Any]]) -> None:
                 "final_channel_found": result.get("final_channel_found"),
                 "repair_attempted": result.get("repair_attempted"),
                 "repair_success": result.get("repair_success"),
+                "vocab_valid": result.get("vocab_valid"),
+                "vocab_errors": result.get("vocab_errors"),
+                "initial_vocab_errors": result.get("initial_vocab_errors"),
+                "vocab_repair_attempted": result.get("vocab_repair_attempted"),
+                "vocab_repair_success": result.get("vocab_repair_success"),
+                "unknown_needed_tools": result.get("unknown_needed_tools"),
+                "unknown_verification_checks": result.get("unknown_verification_checks"),
                 "prediction": result.get("prediction"),
             }
             handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
@@ -771,6 +868,10 @@ def write_markdown_log(path: Path, args: argparse.Namespace, report: dict[str, A
         f"System prompt file: `{args.system_prompt_file}`",
         f"Few-shot file: `{args.fewshot_file}`",
         f"Repair JSON once: `{args.repair_json_once}`",
+        f"Vocabulary file: `{args.vocab_file}`",
+        f"Validate vocabulary: `{args.validate_vocab}`",
+        f"Repair vocabulary once: `{args.repair_vocab_once}`",
+        f"Vocabulary strict: `{args.vocab_strict}`",
         "",
         "## Metrics",
         "",
@@ -788,6 +889,10 @@ def write_markdown_log(path: Path, args: argparse.Namespace, report: dict[str, A
 
 def main() -> None:
     args = parse_args()
+    if args.repair_vocab_once or args.vocab_strict:
+        args.validate_vocab = True
+    if args.validate_vocab:
+        validate_vocab_document(Path(args.vocab_file))
     eval_rows = read_jsonl(Path(args.eval_file))
     if args.max_cases is not None:
         eval_rows = eval_rows[: args.max_cases]
@@ -808,7 +913,7 @@ def main() -> None:
             case_id,
             {"raw_output": "", "final_text": "", "final_channel_found": False, "prediction": None},
         )
-        results.append(score_case(row, raw_prediction, schema))
+        results.append(score_case(row, raw_prediction, schema, args.validate_vocab))
 
     results_path = Path(args.results) if args.results else default_results_path()
     report = {
@@ -827,6 +932,10 @@ def main() -> None:
             "fewshot_file": args.fewshot_file,
             "fewshot_message_count": len(fewshot_messages),
             "repair_json_once": args.repair_json_once,
+            "vocab_file": args.vocab_file,
+            "validate_vocab": args.validate_vocab,
+            "repair_vocab_once": args.repair_vocab_once,
+            "vocab_strict": args.vocab_strict,
             "results_path": str(results_path),
         },
         "metrics": summarize(results),
@@ -855,6 +964,10 @@ def main() -> None:
         print(f"Predictions: {predictions_out}")
     if args.markdown_log:
         print(f"Markdown log: {args.markdown_log}")
+    if args.vocab_strict and report["metrics"]["vocab_invalid_count"]:
+        raise SystemExit(
+            f"Vocabulary strict validation failed for {report['metrics']['vocab_invalid_count']} case(s)"
+        )
 
 
 if __name__ == "__main__":
