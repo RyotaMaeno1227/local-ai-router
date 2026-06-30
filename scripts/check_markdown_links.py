@@ -28,7 +28,7 @@ def clean_link_target(raw_target: str) -> str | None:
 
 
 def resolve_target(source: Path, target: str) -> Path:
-    if target == "README.md" or target.startswith("docs/"):
+    if target.startswith("docs/"):
         return ROOT / target
     return source.parent / target
 

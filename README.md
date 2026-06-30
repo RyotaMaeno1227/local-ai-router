@@ -21,6 +21,10 @@ WSL2 Ubuntu 上で `openai/gpt-oss-20b` をローカル科学系 AI 指揮者の
   logs/
 ```
 
+Use the [Codex job completion template](docs/router/codex_job_completion_template.md)
+to report commit state, documentation, validation, prohibited actions, and the
+next approval-gated step at the end of each job.
+
 ## Setup
 
 Windows 側や WSL の OS 設定はこのプロジェクトでは変更しません。作業場所は必ず WSL 側の `~/local-ai/gpt-oss-20b` です。`/mnt/c/...` 配下には作らないでください。

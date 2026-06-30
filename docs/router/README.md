@@ -14,6 +14,7 @@ is selected for production routing.
 
 ## Primary Index
 
+- [Codex job completion template](codex_job_completion_template.md)
 - [Standard router configuration](router_standard_config.md)
 - [LoRA postmortem and router decision](qwen35_lora_postmortem_and_router_decision.md)
 - [Next-phase external API and RAG design](next_phase_external_api_rag_design.md)
