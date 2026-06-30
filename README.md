@@ -738,6 +738,37 @@ M16b artifacts:
 - `docs/router_sft_v002_candidate_audit.md`
 - `data/router_sft_v002_candidate.jsonl`
 
+## M17 Qwen3.5 4B LoRA v002-small
+
+M17 completed the approved one-epoch Qwen3.5 4B LoRA v002-small run on the
+90-row frozen candidate. The dataset SHA-256 was
+`f451b8007cf9992ab4310625bd5d01078049e5bcb919d3ef6647b94873ec2332`.
+Training completed 23 optimizer steps with aggregate `train_loss=2.637`, no
+CUDA OOM, no non-finite loss, and a successful adapter save at
+`adapters/qwen35-4b-router-lora-v002-small`.
+
+On canonical 50, v002 scored 45 mode, 39 tools, 18 verification, and 4 risk
+underestimates, with 49/50 vocabulary-valid outputs. Compared with base, this
+is +1 verification but one additional risk underestimate and one failed
+vocabulary repair. On holdout 30, v002 scored 28 mode, 26 tools, 8
+verification, and 8 risk underestimates; only tool containment improved over
+base.
+
+The adoption decision is **keep base standard and retain v002 as reference**.
+The standard remains Qwen3.5 4B base with prompt-router v3 and schema/vocab
+repair. Adapter weights and operational logs are git-ignored. No 150-row
+training, Qwen3.5 9B use, GPT-OSS fine-tuning, dependency reinstall, or API
+connection occurred in M17.
+
+M17 artifacts:
+
+- `docs/qwen35_lora_v002_small_training_report.md`
+- `docs/qwen35_lora_v002_small_eval_report.md`
+- `eval_results/qwen35_lora_v002_small_prompt_v3_canonical_vocab_repair_eval_001.json`
+- `eval_results/qwen35_lora_v002_small_prompt_v3_canonical_vocab_repair_predictions_001.jsonl`
+- `eval_results/qwen35_lora_v002_small_prompt_v3_holdout_vocab_repair_eval_001.json`
+- `eval_results/qwen35_lora_v002_small_prompt_v3_holdout_vocab_repair_predictions_001.jsonl`
+
 ## Environment Success Memo
 
 Current local environment status:
