@@ -769,6 +769,31 @@ M17 artifacts:
 - `eval_results/qwen35_lora_v002_small_prompt_v3_holdout_vocab_repair_eval_001.json`
 - `eval_results/qwen35_lora_v002_small_prompt_v3_holdout_vocab_repair_predictions_001.jsonl`
 
+## M18 Standard Router Decision
+
+M18 closes the current Qwen3.5 4B LoRA comparison. The standard router is
+`Qwen/Qwen3.5-4B` base with no adapter, prompt-router v3, one schema repair,
+strict vocabulary validation, and one vocabulary repair. LoRA v001-small and
+v002-small remain local reference artifacts and are not selected adapters.
+
+The adapters produced narrow holdout tool gains but did not improve the main
+risk and verification gaps across both evals. V001 regressed canonical
+verification and risk. V002 gained one canonical verification match but
+regressed risk and left one strict vocabulary failure. Additional small LoRA
+runs are paused until a materially new training signal and independent eval
+justify reopening them.
+
+The next phase is the external API dispatcher, local RAG, citation and
+overclaim guards, and deterministic FEM verification workflow. M18 only
+documents this architecture: no training, model load, adapter update, API
+connection, or package installation occurred.
+
+M18 artifacts:
+
+- `docs/qwen35_lora_postmortem_and_router_decision.md`
+- `docs/router_standard_config.md`
+- `docs/next_phase_external_api_rag_design.md`
+
 ## Environment Success Memo
 
 Current local environment status:
