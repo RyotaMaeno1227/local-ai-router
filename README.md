@@ -695,6 +695,31 @@ M15 artifacts:
 - `docs/qwen35_risk_verification_gap_analysis.md`
 - `docs/router_sft_v002_design.md`
 
+## M16 Router SFT v002 Candidate Data
+
+M16 turns the M15 design into a 90-row canonical training candidate at
+`data/router_sft_v002_candidate.jsonl`. The allocation is 15 contact, 15
+nonlinear FEM, 15 code review, 15 paper/novelty, 10 FEM fundamentals, 10
+RAG/API/fusion, and 10 `request_more_info` boundary rows. All 90 rows belong
+to controlled pair or triplet groups that contrast evidence, artifact, risk,
+or routing conditions.
+
+The candidate passes router schema and strict vocabulary validation for all
+90 rows. The audit found no exact prompt matches against either eval dataset
+or either prior SFT dataset. Three near-match candidates are retained in the
+audit report for human review rather than silently removed.
+
+This is candidate data only. No fine-tuning, LoRA dry-run, adapter update, or
+150-row full training was run in M16. Training requires a separate approval
+after review of the candidate data and near-match report.
+
+M16 artifacts:
+
+- `data/router_sft_v002_candidate.jsonl`
+- `scripts/build_router_sft_v002_candidate.py`
+- `scripts/audit_router_sft_v002.py`
+- `docs/router_sft_v002_candidate_audit.md`
+
 ## Environment Success Memo
 
 Current local environment status:
