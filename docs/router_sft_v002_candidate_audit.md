@@ -12,7 +12,7 @@ Candidate: `data/router_sft_v002_candidate.jsonl`
 - exact duplicate candidate prompts: 0 groups
 - exact eval prompt matches: 0
 - exact prior-SFT prompt matches: 0
-- near-match candidates at threshold 0.82: 3
+- near-match candidates at threshold 0.82: 0
 - request_more_info policy errors: 0
 - fusion policy errors: 0
 
@@ -127,13 +127,7 @@ Candidate: `data/router_sft_v002_candidate.jsonl`
 
 ## Near-Duplicate Candidates
 
-These are review candidates only; similarity does not make them duplicates.
-
-| Score | Candidate | Reference | Candidate prompt | Reference prompt |
-| ---: | --- | --- | --- | --- |
-| 0.844 | `router_sft_v002_candidate_009` | `evals/router_eval_holdout_001.jsonl:router_eval_holdout_001_014` | Two specialists disagree whether a frictional interface model is conservative enough for a high-consequence report. | Two specialists disagree whether a frictional seal model is conservative enough for a high-risk decision. |
-| 0.838 | `router_sft_v002_candidate_072` | `evals/router_eval_holdout_001.jsonl:router_eval_holdout_001_027` | Determine whether a newly announced solver feature exists when local documentation may be outdated. | Determine whether a newly announced external solver feature exists when the local knowledge base may be outdated. |
-| 0.832 | `router_sft_v002_candidate_055` | `evals/router_eval_001_canonical.jsonl:router_eval_001_049` | Review a safety-critical numerical claim in a synthetic paper for publication readiness. | Assess a safety-critical engineering claim in a synthetic paper abstract for publication readiness. |
+None at threshold 0.82.
 
 ## Validation Errors
 

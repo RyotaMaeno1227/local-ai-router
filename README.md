@@ -720,6 +720,24 @@ M16 artifacts:
 - `scripts/audit_router_sft_v002.py`
 - `docs/router_sft_v002_candidate_audit.md`
 
+## M16b Router SFT v002 Candidate Freeze
+
+M16b reviewed and rewrote the three near-duplicate prompt candidates from the
+M16 audit. The follow-up audit reports zero exact eval/SFT prompt matches and
+zero near-match candidates at the configured 0.82 threshold, while retaining
+all 90 rows, the area allocation, and controlled pair/triplet structure.
+
+`data/router_sft_v002_candidate.jsonl` is now frozen as the candidate for the
+next explicit training approval gate. Schema and strict vocabulary validation
+remain 90/90. Freeze status does not authorize training: no fine-tuning, LoRA
+dry-run, adapter update, model load, or 150-row training was performed.
+
+M16b artifacts:
+
+- `docs/router_sft_v002_freeze_note.md`
+- `docs/router_sft_v002_candidate_audit.md`
+- `data/router_sft_v002_candidate.jsonl`
+
 ## Environment Success Memo
 
 Current local environment status:
