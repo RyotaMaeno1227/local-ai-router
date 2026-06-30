@@ -32,7 +32,7 @@ verification checks, or fusion policy:
   requires current vendor documentation instead of archived local notes.
 
 The updated audit is recorded in
-`docs/router_sft_v002_candidate_audit.md`. It reports no remaining near-match
+`docs/router/router_sft_v002_candidate_audit.md`. It reports no remaining near-match
 candidates at the configured threshold.
 
 ## Approval Boundary

@@ -16,6 +16,7 @@ WSL2 Ubuntu 上で `openai/gpt-oss-20b` をローカル科学系 AI 指揮者の
   scripts/train_router_lora.py
   scripts/infer_router_lora.py
   scripts/eval_router.py
+  docs/router/README.md
   adapters/
   logs/
 ```
@@ -301,7 +302,7 @@ The expansion is based on M5 base eval failures recorded in:
 
 - `eval_results/base_eval_001.json`
 - `eval_results/base_predictions_001.jsonl`
-- `docs/base_eval_failure_analysis.md`
+- `docs/router/base_eval_failure_analysis.md`
 
 The dataset emphasizes:
 
@@ -377,7 +378,7 @@ Result summary:
 
 The current operating decision is to treat `openai/gpt-oss-20b` as an inference-only router/verifier on RTX5080. `scripts/train_router_lora.py` now blocks `--run-train --load-strategy mxfp4-auto` before model loading to prevent repeating this unsupported route.
 
-Detailed findings are in `docs/m7_lora_dryrun_findings.md`. Adapter directories under `adapters/` and operational logs under `logs/*.md` are not managed by git.
+Detailed findings are in `docs/router/m7_lora_dryrun_findings.md`. Adapter directories under `adapters/` and operational logs under `logs/*.md` are not managed by git.
 
 ## M7b Prompt Router V2
 
@@ -413,7 +414,7 @@ Saved result files:
 - `eval_results/prompt_router_v2_smoke_001.json`
 - `eval_results/prompt_router_v2_eval_001.json`
 - `eval_results/prompt_router_v2_predictions_001.jsonl`
-- `docs/prompt_router_v2_eval_report.md`
+- `docs/router/prompt_router_v2_eval_report.md`
 
 M7b result summary versus M5 base eval:
 
@@ -433,7 +434,7 @@ repair_success_count: 0 -> 1
 ## M8 Router Model Candidate Survey
 
 M8 starts the survey of router model candidates beyond `openai/gpt-oss-20b`.
-The candidate comparison is in `docs/router_model_candidates.md`.
+The candidate comparison is in `docs/router/router_model_candidates.md`.
 
 The first experiment target is `Qwen/Qwen3.5-4B`, pending a separate approval
 step for any model download, model load, baseline eval, or LoRA dry-run.
@@ -453,7 +454,7 @@ Saved result files:
 - `eval_results/qwen35_4b_eval_smoke_001.json`
 - `eval_results/qwen35_4b_eval_001.json`
 - `eval_results/qwen35_4b_predictions_001.jsonl`
-- `docs/qwen35_4b_router_eval_report.md`
+- `docs/router/qwen35_4b_router_eval_report.md`
 
 M9 comparison against `openai/gpt-oss-20b` prompt-router v2:
 
@@ -508,7 +509,7 @@ No CUDA OOM occurred, no NaN loss was observed, and adapters were saved under
 remain git-ignored.
 
 M9 failure analysis for future approved training is in
-`docs/qwen35_4b_eval_failure_analysis.md`. The main priorities are canonical
+`docs/router/qwen35_4b_eval_failure_analysis.md`. The main priorities are canonical
 verification check names, richer `needed_tools`, research novelty routing, and
 conservative nonlinear/contact risk calibration.
 
@@ -538,7 +539,7 @@ Results:
 - `eval_results/qwen35_lora_v001_small_predictions_001.jsonl`
 - `eval_results/qwen35_lora_v001_small_holdout_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_holdout_predictions_001.jsonl`
-- `docs/qwen35_lora_v001_small_eval_report.md`
+- `docs/router/qwen35_lora_v001_small_eval_report.md`
 
 Operational logs remain under `logs/` and are not managed by git.
 
@@ -557,16 +558,16 @@ Verification analysis found a vocabulary contract mismatch: predictions use
 natural-language labels while holdout expectations use canonical snake_case
 identifiers. The existing few-shot prompt also teaches natural-language
 labels. Canonical values and migration aliases are documented in
-`docs/router_canonical_vocabulary.md`; detailed comparison is in
-`docs/qwen35_holdout_and_verification_analysis.md`.
+`docs/router/router_canonical_vocabulary.md`; detailed comparison is in
+`docs/router/qwen35_holdout_and_verification_analysis.md`.
 
 M11b artifacts:
 
 - `eval_results/qwen35_4b_holdout_eval_001.json`
 - `eval_results/qwen35_4b_holdout_predictions_001.jsonl`
 - `scripts/analyze_verification_labels.py`
-- `docs/router_canonical_vocabulary.md`
-- `docs/qwen35_holdout_and_verification_analysis.md`
+- `docs/router/router_canonical_vocabulary.md`
+- `docs/router/qwen35_holdout_and_verification_analysis.md`
 
 ## M12 Canonical Vocabulary Repair and Prompt-Router v3
 
@@ -598,8 +599,8 @@ M12 artifacts:
 - `prompts/router_system_v3.md`
 - `prompts/router_fewshot_v3.jsonl`
 - `scripts/normalize_router_vocabulary.py`
-- `docs/router_vocabulary_repair_report.md`
-- `docs/qwen35_prompt_v3_eval_report.md`
+- `docs/router/router_vocabulary_repair_report.md`
+- `docs/router/qwen35_prompt_v3_eval_report.md`
 - `eval_results/qwen35_4b_prompt_v3_eval_001.json`
 - `eval_results/qwen35_4b_prompt_v3_holdout_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_holdout_eval_001.json`
@@ -616,7 +617,7 @@ verification scores are not directly interchangeable.
 for allowed mode, risk, tool, verification, and fusion vocabulary. Strict mode
 returns nonzero for unknown values. Prediction audits are non-destructive and
 found a small number of field-placement or invented-label errors, documented
-in `docs/qwen35_prompt_v3_canonical_eval_report.md`.
+in `docs/router/qwen35_prompt_v3_canonical_eval_report.md`.
 
 On canonical 50 cases, Qwen3.5 base scored 45 mode, 39 tool, and 17
 verification matches with 3 risk underestimates. LoRA v001-small scored 45,
@@ -633,8 +634,8 @@ M13 artifacts:
 - `evals/router_eval_001_canonical.jsonl`
 - `scripts/canonicalize_router_eval.py`
 - `scripts/validate_router_vocab.py`
-- `docs/router_eval_canonicalization_report.md`
-- `docs/qwen35_prompt_v3_canonical_eval_report.md`
+- `docs/router/router_eval_canonicalization_report.md`
+- `docs/router/qwen35_prompt_v3_canonical_eval_report.md`
 - `eval_results/qwen35_4b_prompt_v3_canonical_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_eval_001.json`
 
@@ -665,7 +666,7 @@ adapter update, API access, or 150-row training occurred in M14.
 M14 artifacts:
 
 - `scripts/router_vocab.py`
-- `docs/qwen35_vocab_repair_eval_report.md`
+- `docs/router/qwen35_vocab_repair_eval_report.md`
 - `eval_results/qwen35_4b_prompt_v3_canonical_vocab_repair_eval_001.json`
 - `eval_results/qwen35_4b_prompt_v3_holdout_vocab_repair_eval_001.json`
 - `eval_results/qwen35_lora_v001_small_prompt_v3_canonical_vocab_repair_eval_001.json`
@@ -684,7 +685,7 @@ tasks and incomplete verification sets. Across both evals,
 analysis also identified a substring-scoring edge case, so future canonical
 verification evaluation should use exact label membership.
 
-`docs/router_sft_v002_design.md` proposes a reviewed 90-row canonical candidate
+`docs/router/router_sft_v002_design.md` proposes a reviewed 90-row canonical candidate
 set emphasizing risk, verification completeness, tools, and clarification
 contrast pairs. This remains a design stage: no v002 JSONL, fine-tuning, LoRA
 dry-run, adapter update, or 150-row training was performed.
@@ -692,8 +693,8 @@ dry-run, adapter update, or 150-row training was performed.
 M15 artifacts:
 
 - `scripts/analyze_router_quality_gaps.py`
-- `docs/qwen35_risk_verification_gap_analysis.md`
-- `docs/router_sft_v002_design.md`
+- `docs/router/qwen35_risk_verification_gap_analysis.md`
+- `docs/router/router_sft_v002_design.md`
 
 ## M16 Router SFT v002 Candidate Data
 
@@ -718,7 +719,7 @@ M16 artifacts:
 - `data/router_sft_v002_candidate.jsonl`
 - `scripts/build_router_sft_v002_candidate.py`
 - `scripts/audit_router_sft_v002.py`
-- `docs/router_sft_v002_candidate_audit.md`
+- `docs/router/router_sft_v002_candidate_audit.md`
 
 ## M16b Router SFT v002 Candidate Freeze
 
@@ -734,8 +735,8 @@ dry-run, adapter update, model load, or 150-row training was performed.
 
 M16b artifacts:
 
-- `docs/router_sft_v002_freeze_note.md`
-- `docs/router_sft_v002_candidate_audit.md`
+- `docs/router/router_sft_v002_freeze_note.md`
+- `docs/router/router_sft_v002_candidate_audit.md`
 - `data/router_sft_v002_candidate.jsonl`
 
 ## M17 Qwen3.5 4B LoRA v002-small
@@ -762,8 +763,8 @@ connection occurred in M17.
 
 M17 artifacts:
 
-- `docs/qwen35_lora_v002_small_training_report.md`
-- `docs/qwen35_lora_v002_small_eval_report.md`
+- `docs/router/qwen35_lora_v002_small_training_report.md`
+- `docs/router/qwen35_lora_v002_small_eval_report.md`
 - `eval_results/qwen35_lora_v002_small_prompt_v3_canonical_vocab_repair_eval_001.json`
 - `eval_results/qwen35_lora_v002_small_prompt_v3_canonical_vocab_repair_predictions_001.jsonl`
 - `eval_results/qwen35_lora_v002_small_prompt_v3_holdout_vocab_repair_eval_001.json`
@@ -790,9 +791,9 @@ connection, or package installation occurred.
 
 M18 artifacts:
 
-- `docs/qwen35_lora_postmortem_and_router_decision.md`
-- `docs/router_standard_config.md`
-- `docs/next_phase_external_api_rag_design.md`
+- `docs/router/qwen35_lora_postmortem_and_router_decision.md`
+- `docs/router/router_standard_config.md`
+- `docs/router/next_phase_external_api_rag_design.md`
 
 ## Environment Success Memo
 

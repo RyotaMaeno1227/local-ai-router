@@ -12,7 +12,7 @@ v001-small and v002-small LoRA comparisons.
 - few-shot messages: `prompts/router_fewshot_v3.jsonl`
 - output schema: `schemas/router_output.schema.json`
 - schema repair: once, only after parse or schema failure
-- vocabulary source: `docs/router_canonical_vocabulary.md`
+- vocabulary source: `docs/router/router_canonical_vocabulary.md`
 - vocabulary validation: strict
 - vocabulary repair: once, only after schema-valid vocabulary failure
 - maximum new tokens: 256

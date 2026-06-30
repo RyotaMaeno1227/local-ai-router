@@ -79,7 +79,7 @@ Before approving v002 training:
 
 1. Replace natural-language verification labels in prompt-router few-shot
    examples with the canonical identifiers in
-   `docs/router_canonical_vocabulary.md`.
+   `docs/router/router_canonical_vocabulary.md`.
 2. State in the system prompt that `verification.checks` accepts canonical
    lowercase snake_case identifiers only.
 3. Normalize all SFT assistant outputs and eval expectations to the same

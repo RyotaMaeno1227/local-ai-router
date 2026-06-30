@@ -76,7 +76,7 @@ matches, 22 tool matches, 0 exact verification matches, and 8 risk
 underestimates; LoRA scored 28, 22, 0, and 8 respectively. The adapter improved
 one mode boundary but did not demonstrate broader holdout improvement. The
 0/30 exact verification result is primarily a vocabulary-contract mismatch,
-analyzed in `docs/qwen35_holdout_and_verification_analysis.md`.
+analyzed in `docs/router/qwen35_holdout_and_verification_analysis.md`.
 
 ## Artifacts
 

@@ -75,5 +75,5 @@ No training or adapter update occurred.
 
 M13 subsequently migrated the original 50-case eval to canonical expectations
 and reran base and LoRA v001-small. See
-`docs/qwen35_prompt_v3_canonical_eval_report.md`; the legacy 50-case
+`docs/router/qwen35_prompt_v3_canonical_eval_report.md`; the legacy 50-case
 verification score in this document remains non-comparable by design.

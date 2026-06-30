@@ -38,7 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--schema", type=Path, default=Path("schemas/router_output.schema.json"))
-    parser.add_argument("--output", type=Path, default=Path("docs/router_sft_v002_candidate_audit.md"))
+    parser.add_argument("--output", type=Path, default=Path("docs/router/router_sft_v002_candidate_audit.md"))
     parser.add_argument("--near-threshold", type=float, default=0.82)
     return parser.parse_args()
 

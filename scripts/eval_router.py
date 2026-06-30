@@ -46,7 +46,7 @@ REQUIRED_KEYS = (
     "final_answer_policy",
 )
 DEFAULT_SCHEMA = Path("schemas/router_output.schema.json")
-DEFAULT_VOCAB = Path("docs/router_canonical_vocabulary.md")
+DEFAULT_VOCAB = Path("docs/router/router_canonical_vocabulary.md")
 SYSTEM_PROMPT = f"""Return only one final JSON object for a scientific router decision.
 No markdown. No prose outside JSON. No chain-of-thought.
 Top-level keys: {", ".join(REQUIRED_KEYS)}

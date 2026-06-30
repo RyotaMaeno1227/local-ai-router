@@ -14,7 +14,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-eval", default="eval_results/base_eval_001.json")
     parser.add_argument("--predictions", default="eval_results/base_predictions_001.jsonl")
-    parser.add_argument("--output", default="docs/base_eval_failure_analysis.md")
+    parser.add_argument("--output", default="docs/router/base_eval_failure_analysis.md")
     return parser.parse_args()
 
 

@@ -35,7 +35,7 @@ Risk rules:
 - low: simple explanation, schema check, package parsing, contained note with no safety impact.
 
 Verification rules:
-- verification.checks must contain only canonical lowercase snake_case identifiers from docs/router_canonical_vocabulary.md.
+- verification.checks must contain only canonical lowercase snake_case identifiers from docs/router/router_canonical_vocabulary.md.
 - Do not use natural-language labels, spaces, hyphens, or capitalization in verification.checks.
 - Do not create synonyms or unknown labels.
 - Put explanatory prose only in verification.reason.
